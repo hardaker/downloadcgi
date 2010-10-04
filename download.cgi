@@ -6,7 +6,9 @@ use strict;
 
 my $downloaddir = $ENV{'SCRIPT_FILENAME'};
 $downloaddir =~ s/(.*)\/(.*)/$1/;
-my $orderrules = "$downloaddir/RULES";
+
+my $rulesfilename = "RULES";
+my $orderrules = "$downloaddir/$rulesfilename";
 
 my %stuff;
 my @rules;
@@ -161,7 +163,7 @@ sub load_files {
     my $dir;
     while (defined($dir = $dirh->read)) {
 	next if ($dir =~ /^\./);
-	next if ($dir eq 'RULES');
+	next if ($dir eq $rulesfilename);
 
 	my $subversion = "&nbsp;";
 
