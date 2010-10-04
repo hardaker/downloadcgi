@@ -309,6 +309,15 @@ This will likely only work with apache as the script expects the
 SCRIPT_FILENAME environment variable to be set, which may be an
 apache-ism.
 
+=head1 TODO
+
+The following features would be 'nice to haves:' 
+
+- sort by various other methods
+- suffix printing (ie, tar.gz, md5, sha, gpg, ...)
+- URL prefix other than current
+- generic list formatting mechanism 
+
 =head1 AUTHOR
 
 Wes Hardaker E<lt>opensource@hardakers.net<gt>
