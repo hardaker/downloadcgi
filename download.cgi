@@ -203,3 +203,113 @@ sub Error {
     exit 1;
 }
 
+=pod
+
+=head1 NAME
+
+download.cgi -- Organize a download directory
+
+=head1 SYNOPSIS
+
+RULES file example syntax:
+
+  printfile MyHtmlTopStuff.html
+
+  print <h2>tar files:</h2>
+  list .*\.tar\.(gz|bz2)
+
+  print <h2>zip files:</h2>
+  list .*\.zip
+
+  ignore *~
+
+=head1 INSTALLING
+
+Typically this can be installed by simply copying it to the directory
+it should serve and renaming it to I<index.cgi>
+(e.g. I</var/www/my-server/download/index.cgi>) .  Make sure to make
+it B<executable> and make sure to create a I<RULES> file for it to
+read.
+
+You may need to set the I<ExecCGI> option in an apache I<.htaccess>
+file as well:
+
+  Options +ExecCGI
+
+=head1 RULES FILE PROCESSING
+
+The script works by first reading in the I<RULES. file and caching the
+results.  Each line is expected to be a comment (prefixed by a #), a
+blank line or a configuration token (described in the next section)
+followed by argument(s) to the end of the line.
+
+The I<download.cgi> script will then read in the directory in which it
+was placed and process each file according to the ordered set of rules
+loaded.  The first matching rule will win and the output will be
+generated based on that rule.
+
+=head1 CREATING RULES
+
+There are a few different types of syntax lines can go into the I<RULES> file.
+Per typical configuration files, lines starting with a # will be
+ignore as a comment.
+
+Note: Configuration lines must not start with white-space, as this will be
+used to add optional configuration tokens to the rules in the future
+and the code already treats white-space starting lines differently.
+
+=over
+
+=item printfile FILE
+
+The B<printefile> directive takes a single argument and simply dumps that
+file out.  It's functionally equivelent to a "include" statement.
+
+=item print TEXT
+
+The B<print> token simply prints the rest of the line to the output page.
+It is useful especially for quick header syntax above a I<list>.
+
+=item list REGEXP
+
+This is the real power behind the I<download.cgi> script.  This allows
+you to group files in a directory by regular expression matching.  The
+list will be printed using HTML <ul> and <li> style tags [future
+versions will allow for a more flexible output style].
+
+The list will be sorted by version numbers as best as possible.  The
+first number after a - will be considered the start of a version
+number and high version numbers will be sorted to higher in the
+displayed list (so 1.7.1 will be above 1.7).  The version sorting
+algorithm treats I<.preN> and I<.rcN> suffixes differently so that
+1.7.1.pre1 will be sorted below 1.7.1.  [future versions will allow
+for a more flexible output style].
+
+Note: make sure you realize that a regular expression is required and
+typical unix globbing is not supported (yet).  IE, "*.tar.gz" is not a
+valid argument.
+
+=item ignore REGEXP
+
+This allows files to be ignored so that error messages about unknown
+files don't get printed to the web server's error log.
+
+=back
+
+=head1 NOTES
+
+This will likely only work with apache as the script expects the
+SCRIPT_FILENAME environment variable to be set, which may be an
+apache-ism.
+
+=head1 AUTHOR
+
+Wes Hardaker <opensource@hardakers.net>
+
+=head1 COPYRIGHT and LICENSE
+
+Copyright (c) 2010 Wes Hardaker
+
+All rights reserved.  This program is free software; you may
+redistribute it and/or modify it under the same terms as Perl itself.
+
