@@ -317,6 +317,8 @@ The following features would be 'nice to haves:'
 - suffix printing (ie, tar.gz, md5, sha, gpg, ...)
 - URL prefix other than current
 - generic list formatting mechanism 
+- hover notes
+- caching of data for speed (based on directory modification time)
 
 =head1 AUTHOR
 
