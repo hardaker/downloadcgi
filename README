@@ -1,0 +1,3 @@
+The download.cgi package allows you to organize a download directory
+through the creation of a RULES file to help organize and structure
+the output.  See the download.cgi manual page for further details. 
