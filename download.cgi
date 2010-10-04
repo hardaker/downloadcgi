@@ -48,7 +48,9 @@ sub print_results {
 
 	    # XXX: better sort here
 	    if ($rule->{'sortby'} eq 'name') {
-		@files = sort sort_versions @files;
+		@files = sort @files;
+	    } elsif ($rule->{'sortby'} eq 'date') {
+		@files = sort sort_by_date @files;
 	    } else {
 		@files = sort sort_version_before_package @files;
 	    }
@@ -71,6 +73,7 @@ sub print_results {
 }
 
 # sorting version numbers by newest first
+# XXX: pretty much replaced by the next one; should go away?
 sub sort_versions {
     my $aroot = $a;
     my $broot = $b;
@@ -106,6 +109,10 @@ sub sort_version_before_package {
     }
     return $aversion <=> $aversion if (($aversion <=> $aversion) != 0);
     return $broot cmp $aroot;
+}
+
+sub sort_by_date {
+    return (stat($a))[1] <=> (stat($a))[0];
 }
 
 sub match_rule {
@@ -238,7 +245,7 @@ file as well:
 
 =head1 RULES FILE PROCESSING
 
-The script works by first reading in the I<RULES. file and caching the
+The script works by first reading in the I<RULES>. file and caching the
 results.  Each line is expected to be a comment (prefixed by a #), a
 blank line or a configuration token (described in the next section)
 followed by argument(s) to the end of the line.
@@ -304,7 +311,7 @@ apache-ism.
 
 =head1 AUTHOR
 
-Wes Hardaker <opensource@hardakers.net>
+Wes Hardaker E<lt>opensource@hardakers.net<gt>
 
 =head1 COPYRIGHT and LICENSE
 
