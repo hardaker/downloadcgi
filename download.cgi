@@ -37,7 +37,10 @@ sub print_results {
     #
     # run through all the rule results and display the output
     #
+
     foreach my $rule (@rules) {
+	my $lastversion;
+
 	if ($rule->{'type'} eq 'print') {
 	    print $rule->{'expression'},"\n";
 	} elsif ($rule->{'type'} eq 'printfile') {
@@ -61,6 +64,13 @@ sub print_results {
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
 	    foreach my $file (@files) {
+		if ($rule->{'versionbreaks'}) {
+		    my $version = find_version($file);
+		    if (defined($lastversion) && $lastversion ne $version) {
+			printf("<br />\n");
+		    }
+		    $lastversion = $version;
+		}
 		printf($format, $file, $file);
 	    }
 	    print "</ul>\n";
@@ -290,6 +300,17 @@ Note: Configuration lines must not start with white-space, as this will be
 used to add optional configuration tokens to the rules in the future
 and the code already treats white-space starting lines differently.
 
+=head2 Rule Options
+
+Rule options can be created by prefixing a line with a white-space
+character.  Thus, the following is a valid single rule definition that
+adds the "versionspaces" option to the rule:
+
+    list .*.rpm
+    	versionspaces 1
+
+=head2 Rules
+
 =over
 
 =item printfile FILE
@@ -320,6 +341,21 @@ for a more flexible output style].
 Note: make sure you realize that a regular expression is required and
 typical unix globbing is not supported (yet).  IE, "*.tar.gz" is not a
 valid argument.
+
+Extra options:
+
+=over
+
+=item versionspaces 1
+
+This adds a verical space between files of different versions.  This
+is most useful for grouping file sets together such as multilpe RPMs
+that make up a single version set.
+
+    list mypackage.*.rpm
+    	versionspaces 1
+
+=back
 
 =item ignore REGEXP
 
