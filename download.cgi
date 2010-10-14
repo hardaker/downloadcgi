@@ -72,6 +72,31 @@ sub print_results {
     }
 }
 
+# find_version() works against at least these:
+#   net-snmp-5.4.tar.gz
+#   ne-snmp-5.4.3.tar.gz
+#   n-f-5.4.3.rc1.tar.gz
+#   x-y-aoeu-auoe-5.4.3.pre1.tar.gz
+#   x-y-aoeu-auoe-5.4.3.pre1-4.rpm
+#   x-y-aoeu-auoe-5.4.3.pre1-4.rpm
+
+sub find_version {
+    # fetches the version number out of the first (and only) argument
+    my $package = $_[0];
+
+    # strip off "word-" prefixes
+    while ($package =~ s/^[a-zA-Z]\w*-//g) { }
+
+    # find the base package version number
+    my $version;
+    while ($package =~ s/^((\d+|rc\d+|pre\d+)[-\.])//g) { $version .= $1; }
+
+    # strip off the potential trailing . or -
+    $version =~ s/[-\.]$//;
+
+    return $version;
+}
+
 # sorting version numbers by newest first
 # XXX: pretty much replaced by the next one; should go away?
 sub sort_versions {
