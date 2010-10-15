@@ -64,15 +64,22 @@ sub print_results {
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
 	    foreach my $file (@files) {
-		if ($rule->{'versionbreaks'}) {
+		if ($rule->{'versionbreaks'} || $rule->{'versionheaders'}) {
 		    my $version = find_version($file);
 		    if (defined($lastversion) && $lastversion ne $version) {
 			printf("<br />\n");
+		    }
+		    if ($rule->{'versionheaders'}) {
+			if ($lastversion ne $version) {
+			    print "</ul>\n" if (defined($lastversion));
+			    print "<li>$version</li>\n<ul>\n";
+			}
 		    }
 		    $lastversion = $version;
 		}
 		printf($format, $file, $file);
 	    }
+	    print "</ul>\n" if (defined($lastversion));
 	    print "</ul>\n";
 	} elsif ($rule->{'type'} eq 'ignore') {
 	    # no op
@@ -354,6 +361,19 @@ that make up a single version set.
 
     list mypackage.*.rpm
     	versionspaces 1
+
+=item versionheaders 1
+
+This adds version headers ahead of each section with different
+versions so the results look something like:
+
+    + 1.3
+      + dnssec-tools-1.3.rpm
+      + dnssec-tools-libs-1.3.rpm
+
+    + 1.2
+      + dnssec-tools-1.2.rpm
+      + dnssec-tools-libs-1.2.rpm
 
 =back
 
