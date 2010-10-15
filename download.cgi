@@ -106,7 +106,7 @@ sub find_version {
 
     # find the base package version number
     my $version;
-    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+)[-\.])//) { $version .= $1; }
+    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+|fc\d+|i386|ppc)[-\.])//) { $version .= $1; }
 
     # strip off the potential trailing . or -
     $version =~ s/[-\.]$//;
