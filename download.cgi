@@ -183,6 +183,11 @@ sub sort_version_before_package {
     $aversion =~ s/.(pre|rc).*//;
     $bversion =~ s/.(pre|rc).*//;
 
+    $aversion =~ s/[-.][\D].*//;
+    $bversion =~ s/[-.][\D].*//;
+
+    print "$aversion\n" if ($a =~ /1.10/);
+
     my $aroot = $aversion;
     my $broot = $bversion;
 
@@ -195,8 +200,44 @@ sub sort_version_before_package {
 	# then rc releases
         return 1 if ($aversion =~ /\.rc/ && $bversion !~ /rc/);
     }
-    return $aversion <=> $aversion if (($aversion <=> $aversion) != 0);
-    return $broot cmp $aroot;
+
+    my $ret = 0 - compare_parts($aversion, $bversion);
+    return $ret if ($ret != 0);
+    return 0 - compare_parts($aroot, $broot);
+}
+
+sub compare_parts {
+    my ($left, $right) = @_;
+
+    my ($leftmaj, $leftrest) = ($left =~ /(\d+)\.(.*)/);
+    my ($rightmaj, $rightrest) = ($right =~ /(\d+)\.(.*)/);
+
+    if (!defined($leftmaj) && !defined($rightmaj)) {
+	# last digit on both sides
+	return $left <=> $right;
+    }
+
+    if (!defined($leftmaj) || !defined($rightmaj)) {
+	if (defined($leftmaj)) {
+	    # is the last on the right greater than the next left digit?
+	    if ($right > $leftmaj) {
+		return -1;
+	    }
+	    return 1;
+	}
+
+	# is the last on the left greater than the next right digit?
+	if ($left > $rightmaj) {
+	    return 1;
+	}
+	return -1;
+    }
+
+    if ($leftmaj == $rightmaj) {
+	return compare_parts($leftrest, $rightrest);
+    }
+
+    return $leftmaj <=> $rightmaj;
 }
 
 sub sort_by_date {
