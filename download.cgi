@@ -54,6 +54,26 @@ sub print_results {
 	    next if ($#{$rule->{'files'}} == -1);
 	    my @files = @{$rule->{'files'}};
 
+	    my $suffixes = get_param($rule, 'suffixes');
+	    my @suffixes;
+	    my %newfiles;
+	    if ($suffixes) {
+		@suffixes = split(/,*\s+/, $suffixes);
+
+		# process the list of suffixes to group them together
+		foreach my $file (@files) {
+		    foreach my $suffix (@suffixes) {
+			if ($file =~ /(.*)$suffix$/) {
+			    $newfiles{$1}{$suffix} = $file;
+			} else {
+			    $newfiles{$1}{'__left'} = $file;
+			}
+		    }
+		}
+
+		@files = keys(%newfiles);
+	    }
+
 	    # XXX: better sort here
 	    if (get_param($rule, 'sortby') eq 'name') {
 		@files = sort @files;
@@ -69,22 +89,43 @@ sub print_results {
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
 	    foreach my $file (@files) {
+		my $prefix = "";
 		if (get_param($rule, 'versionspaces') || get_param($rule, 'versionheaders')) {
 		    my $version = find_version($file);
 		    if (defined($lastversion) && $lastversion ne $version) {
-			printf("<br />\n");
+			$prefix = "<br />\n";
 		    }
 		    if (get_param($rule, 'versionheaders')) {
 			if ($lastversion ne $version) {
-			    print "</ul>\n" if (defined($lastversion));
-			    print "<li>$version</li>\n<ul>\n";
+			    $prefix .= "</ul>\n" if (defined($lastversion));
+			    $prefix .= "<li>$version</li>\n<ul>\n";
 			}
 		    }
 		    $lastversion = $version;
 		}
-		printf($format, $file, $file);
+		if ($suffixes) {
+		    my $result = "<li>";
+		    my $linkformat = "<a href=\"%s\">%s</a>";
+		    my $count = 0;
+		    foreach my $suffix (@suffixes) {
+			next if (!exists($newfiles{$file}{$suffix}));
+			if ($count == 0) {
+			    print $prefix;
+			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "$file$suffix");
+			} else {
+			    $result .= "&nbsp;&nbsp;|&nbsp;&nbsp;" if ($count == 1);
+			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "[$suffix]");
+			}
+			$count++;
+		    }
+		    next if ($count == 0);
+		    $result .= "</li>\n";
+		    print $result;
+		} else {
+		    printf($format, $file, $file);
+		}
 	    }
-	    print "</ul>\n" if (defined($lastversion));
+	    print "  </ul>\n" if (defined($lastversion) || $suffixes);
 	    print "</ul>\n";
 	} elsif ($rule->{'type'} eq 'ignore') {
 	    # no op
@@ -383,6 +424,23 @@ versions so the results look something like:
     + 1.2
       + dnssec-tools-1.2.rpm
       + dnssec-tools-libs-1.2.rpm
+
+=item suffixes LIST
+
+This binds multiple suffixes together so that all similar file types
+end up on the same line.  For example, if you distribute both .tar.gz
+files as well as .zip and maybe .tar.gz.md5 and .zip.md5, then the
+following line:
+
+    list mypackage.*(zip|tar.gz)
+       suffixes .tar.gz .zip .tar.gz.md5 .zip.md5
+
+Will offer all downloads on a single lien that will look roughly like:
+
+      + dnssec-tools-1.2.tar.gz | [.zip] [.tar.gz.md5] [.zip.md5] 
+
+(assuming all the files were available, otherwise the missing ones are
+excluded)
 
 =back
 
