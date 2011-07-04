@@ -13,6 +13,8 @@ my $orderrules = "$downloaddir/$rulesfilename";
 my %stuff;
 my @rules;
 
+my %globalvars;
+
 #
 # print http headers
 #
@@ -45,14 +47,17 @@ sub print_results {
 	    print $rule->{'expression'},"\n";
 	} elsif ($rule->{'type'} eq 'printfile') {
 	    print_file($rule->{'expression'});
+	} elsif ($rule->{'type'} eq 'global') {
+	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
+	    $globalvars{$left} = $right;
 	} elsif ($rule->{'type'} eq 'list') {
 	    next if ($#{$rule->{'files'}} == -1);
 	    my @files = @{$rule->{'files'}};
 
 	    # XXX: better sort here
-	    if ($rule->{'sortby'} eq 'name') {
+	    if (get_param($rule, 'sortby') eq 'name') {
 		@files = sort @files;
-	    } elsif ($rule->{'sortby'} eq 'date') {
+	    } elsif (get_param($rule, 'sortby') eq 'date') {
 		@files = sort sort_by_date @files;
 	    } else {
 		@files = sort sort_version_before_package @files;
@@ -64,12 +69,12 @@ sub print_results {
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
 	    foreach my $file (@files) {
-		if ($rule->{'versionbreaks'} || $rule->{'versionheaders'}) {
+		if (get_param($rule, 'versionspaces') || get_param($rule, 'versionheaders')) {
 		    my $version = find_version($file);
 		    if (defined($lastversion) && $lastversion ne $version) {
 			printf("<br />\n");
 		    }
-		    if ($rule->{'versionheaders'}) {
+		    if (get_param($rule, 'versionheaders')) {
 			if ($lastversion ne $version) {
 			    print "</ul>\n" if (defined($lastversion));
 			    print "<li>$version</li>\n<ul>\n";
@@ -245,6 +250,10 @@ sub print_file {
     }
 }
 
+sub get_param {
+    my ($rule, $name) = @_;
+    return ($rule->{$name} || $globalvars{$name} || undef);
+}
 
 sub Error {
     print "<h2>", $_[0], "</h2>\n";
