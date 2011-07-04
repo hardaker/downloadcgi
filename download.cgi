@@ -386,6 +386,14 @@ versions so the results look something like:
 
 =back
 
+=item global PARAMETER VALUE
+
+This lets you set global parameters that affect all the rules.  For
+example, you can have versionspaces turned on for all rules by putting
+this at the top of the file:
+
+    global versionspaces 1
+
 =item ignore REGEXP
 
 This allows files to be ignored so that error messages about unknown
