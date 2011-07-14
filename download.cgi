@@ -186,8 +186,6 @@ sub sort_version_before_package {
     $aversion =~ s/[-.][\D].*//;
     $bversion =~ s/[-.][\D].*//;
 
-    print "$aversion\n" if ($a =~ /1.10/);
-
     my $aroot = $aversion;
     my $broot = $bversion;
 
