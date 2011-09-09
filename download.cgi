@@ -370,9 +370,14 @@ it B<executable> and make sure to create a I<RULES> file for it to
 read.
 
 You may need to set the I<ExecCGI> option in an apache I<.htaccess>
-file as well:
+file or I<httpd.conf> file as well:
 
   Options +ExecCGI
+
+In addition, if your server doesn't support the .cgi extension, make sure this
+line is uncommented in your I<httpd.conf> file:
+
+  AddHandler cgi-script .cgi
 
 =head1 RULES FILE PROCESSING
 
@@ -517,7 +522,7 @@ The following features would be 'nice to haves:'
 
 =head1 AUTHOR
 
-Wes Hardaker E<lt>opensource@hardakers.net<gt>
+Wes Hardaker E<lt>opensource AT hardakers DOT netE<gt>
 
 =head1 COPYRIGHT and LICENSE
 
