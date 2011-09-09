@@ -39,6 +39,7 @@ sub print_results {
     #
     # run through all the rule results and display the output
     #
+    my $doneASpan = 0;
 
     foreach my $rule (@rules) {
 	my $lastversion;
@@ -47,6 +48,10 @@ sub print_results {
 	    print $rule->{'expression'},"\n";
 	} elsif ($rule->{'type'} eq 'printfile') {
 	    print_file($rule->{'expression'});
+	} elsif ($rule->{'type'} eq 'name') {
+	    print "</span>\n" if ($doneASpan);
+	    print "<span id=\"$rule->{'expression'}\">\n";
+	    $doneASpan = 1;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
 	    $globalvars{$left} = $right;
@@ -133,6 +138,7 @@ sub print_results {
 	    print STDERR "Download ERROR: unknownrule type $rule->{'type'}\n";
 	}
     }
+    print "</span>\n" if ($doneASpan);
 }
 
 # find_version() works against at least these:
@@ -496,6 +502,11 @@ this at the top of the file:
 
     global versionspaces 1
     global versionheaders 1
+
+=item name NAME
+
+This lets you name sections of the output for showing/hiding using the
+<coming soon stuff>
 
 =item ignore REGEXP
 
