@@ -59,8 +59,9 @@ sub print_results {
 	} elsif ($rule->{'type'} eq 'buttonbar') {
 	    print_button_bar();
 	} elsif ($rule->{'type'} eq 'name') {
+	    my $strippedName = simplify_name($rule->{'expression'});
 	    print "</div>\n" if ($doneADiv);
-	    print "<div class=\"downloadName\" id=\"$rule->{'expression'}\">\n";
+	    print "<div class=\"downloadName\" id=\"$strippedName\">\n";
 	    $doneADiv = 1;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
@@ -339,19 +340,21 @@ sub print_button_bar {
     }
     print "Show: ";
     foreach my $name (@names) {
-	print "  <a class=\"hideshow\" href=\"#\" id=\"$name->{expression}Button\">$name->{expression}</a>\n";
+	my $strippedName = simplify_name($name->{'expression'});
+	print "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
     }
 
     print '<script>$(document).ready(function() {',"\n";
     foreach my $name (@names) {
+	my $strippedName = simplify_name($name->{'expression'});
         print "
-          \$(\"\#$name->{expression}Button\").click(function() {
-                     if ( \$(\"\#$name->{expression}\").is(\":visible\") ) {
-                       \$(\"\#$name->{expression}\").hide(200);
-                       \$(\"\#$name->{expression}Button\").css(\"background-color\",\"\#fff\");
+          \$(\"\#${strippedName}Button\").click(function() {
+                     if ( \$(\"\#${strippedName}\").is(\":visible\") ) {
+                       \$(\"\#${strippedName}\").hide(200);
+                       \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#fff\");
                      } else {
-                       \$(\"\#$name->{expression}\").show(200);
-                       \$(\"\#$name->{expression}Button\").css(\"background-color\",\"\#aaf\");
+                       \$(\"\#${strippedName}\").show(200);
+                       \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#aaf\");
                      }
               });
           ";
@@ -359,6 +362,12 @@ sub print_button_bar {
     print "});</script>\n";
 
     print "</div>\n";
+}
+
+sub simplify_name {
+    my $strippedName = shift;
+    $strippedName =~ s/\W//g;
+    return $strippedName;
 }
 
 #
