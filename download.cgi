@@ -12,6 +12,7 @@ my $orderrules = "$downloaddir/$rulesfilename";
 
 my %stuff;
 my @rules;
+our @names;
 
 my %globalvars;
 
@@ -41,6 +42,13 @@ sub print_results {
     #
     my $doneADiv = 0;
 
+    # Preliminary processing for some rule types to collect some data
+    foreach my $rule (@rules) {
+	if ($rule->{'type'} eq 'name') {
+	    push @names, $rule;
+	}
+    }
+
     foreach my $rule (@rules) {
 	my $lastversion;
 
@@ -48,9 +56,11 @@ sub print_results {
 	    print "$rule->{'expression'}","\n";
 	} elsif ($rule->{'type'} eq 'printfile') {
 	    print_file($rule->{'expression'});
+	} elsif ($rule->{'type'} eq 'buttonbar') {
+	    print_button_bar();
 	} elsif ($rule->{'type'} eq 'name') {
 	    print "</div>\n" if ($doneADiv);
-	    print "<div id=\"$rule->{'expression'}\">\n";
+	    print "<div class=\"downloadName\" id=\"$rule->{'expression'}\">\n";
 	    $doneADiv = 1;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
@@ -319,6 +329,36 @@ sub load_files {
 	}
 #    print "<pre>$ver}{$name}{$type = $dir</pre>\n";
     }
+}
+
+sub print_button_bar {
+    print "<div class=\"buttonbar\">\n";
+    if ($#names == -1) {
+	print "ack, no buttons</div>\n";
+	return;
+    }
+    print "Show: ";
+    foreach my $name (@names) {
+	print "  <a class=\"hideshow\" href=\"#\" id=\"$name->{expression}Button\">$name->{expression}</a>\n";
+    }
+
+    print '<script>$(document).ready(function() {',"\n";
+    foreach my $name (@names) {
+        print "
+          \$(\"\#$name->{expression}Button\").click(function() {
+                     if ( \$(\"\#$name->{expression}\").is(\":visible\") ) {
+                       \$(\"\#$name->{expression}\").hide(200);
+                       \$(\"\#$name->{expression}Button\").css(\"background-color\",\"\#fff\");
+                     } else {
+                       \$(\"\#$name->{expression}\").show(200);
+                       \$(\"\#$name->{expression}Button\").css(\"background-color\",\"\#aaf\");
+                     }
+              });
+          ";
+    }
+    print "});</script>\n";
+
+    print "</div>\n";
 }
 
 #
