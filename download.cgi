@@ -495,6 +495,7 @@ example, you can have versionspaces turned on for all rules by putting
 this at the top of the file:
 
     global versionspaces 1
+    global versionheaders 1
 
 =item ignore REGEXP
 
