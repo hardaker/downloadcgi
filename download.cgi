@@ -526,7 +526,6 @@ apache-ism.
 The following features would be 'nice to haves:' 
 
 - sort by various other methods
-- suffix printing (ie, tar.gz, md5, sha, gpg, ...)
 - URL prefix other than current
 - generic list formatting mechanism 
 - hover notes
