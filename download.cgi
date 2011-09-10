@@ -40,7 +40,7 @@ sub print_results {
     #
     # run through all the rule results and display the output
     #
-    my $doneADiv = 0;
+    my $currentLevel = 0;
 
     # Preliminary processing for some rule types to collect some data
     foreach my $rule (@rules) {
@@ -60,9 +60,14 @@ sub print_results {
 	    print_button_bar();
 	} elsif ($rule->{'type'} eq 'name') {
 	    my $strippedName = simplify_name($rule->{'expression'});
-	    print "</div>\n" if ($doneADiv);
-	    print "<div class=\"downloadName\" id=\"$strippedName\">\n";
-	    $doneADiv = 1;
+	    my $level = get_param($rule, 'level', 1);
+	    if ($currentLevel >= $level) {
+		print "</div>\n" x ($currentLevel - $level + 1);
+	    } elsif ($currentLevel < $level) {
+		print "<div>\n" x ($level - $currentLevel - 1 );
+	    }
+	    print "<div class=\"downloadName lv$level\" id=\"$strippedName\">\n";
+	    $currentLevel = $level;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
 	    $globalvars{$left} = $right;
@@ -149,7 +154,6 @@ sub print_results {
 	    print STDERR "Download ERROR: unknownrule type $rule->{'type'}\n";
 	}
     }
-    print "</div>\n" if ($doneADiv);
 }
 
 # find_version() works against at least these:
@@ -287,6 +291,7 @@ sub load_rules {
 	chomp();
 	my @ruledata = (/^\s*(\S+)\s+(.*)/);
 
+	# if the line begins with white-space, it's an extra parameter
 	if (/^\s+/) {
 	    $rules[$#rules]->{$ruledata[0]} = $ruledata[1];
 	    next;
@@ -386,8 +391,8 @@ sub print_file {
 }
 
 sub get_param {
-    my ($rule, $name) = @_;
-    return ($rule->{$name} || $globalvars{$name} || undef);
+    my ($rule, $name, $default) = @_;
+    return ($rule->{$name} || $globalvars{$name} || $default);
 }
 
 sub Error {
