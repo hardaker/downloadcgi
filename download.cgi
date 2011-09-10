@@ -66,7 +66,7 @@ sub print_results {
 	    } elsif ($currentLevel < $level) {
 		print "<div>\n" x ($level - $currentLevel - 1 );
 	    }
-	    print "<div class=\"downloadName lv$level\" id=\"$strippedName\">\n";
+	    print "<div class=\"downloadName lv$level $strippedName\">\n";
 	    $currentLevel = $level;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
@@ -266,7 +266,7 @@ sub sort_by_date {
 sub match_rule {
     my ($file) = @_;
     foreach my $rule (@rules) {
-	if ($file =~ /$rule->{'expression'}/) {
+	if ($rule->{'type'} eq 'list' && $file =~ /$rule->{'expression'}/) {
 	    push @{$rule->{'files'}}, $file;
 	    return;
 	}
@@ -333,7 +333,6 @@ sub load_files {
 	if ($type) {
 	    $stuff{$ver}{$subversion}{$name}{$type} = [$dir,$subversion];
 	}
-#    print "<pre>$ver}{$name}{$type = $dir</pre>\n";
     }
 }
 
@@ -346,9 +345,13 @@ sub print_button_bar {
     }
 
     my @levelButtons;
+    my %doneName;
 
     print "<span class=\"buttonbartitle\">Show: </span>\n";
     foreach my $name (@names) {
+	next if ($doneName{$name->{'expression'}});
+	$doneName{$name->{'expression'}} = 1;
+
 	my $strippedName = simplify_name($name->{'expression'});
 	$levelButtons[get_param($name, 'level', 1)] .=
 	    "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
@@ -360,18 +363,24 @@ sub print_button_bar {
 
     print '<script>$(document).ready(function() {',"\n";
     foreach my $name (@names) {
+	next if ($doneName{$name->{'expression'}} == 2);
+	$doneName{$name->{'expression'}} = 2;
+
 	my $strippedName = simplify_name($name->{'expression'});
         print "
           \$(\"\#${strippedName}Button\").click(function() {
-                     if ( \$(\"\#${strippedName}\").is(\":visible\") ) {
-                       \$(\"\#${strippedName}\").hide(200);
+                     if ( \$(\"\.${strippedName}\").is(\":visible\") ) {
+                       \$(\".${strippedName}\").hide(200);
                        \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#fff\");
                      } else {
-                       \$(\"\#${strippedName}\").show(200);
+                       \$(\".${strippedName}\").show(200);
                        \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#aaf\");
                      }
               });
           ";
+	if ($name->{'hide'}) {
+	    print "\$(\"#${strippedName}Button\").click();"
+	}
     }
     print "});</script>\n";
 
@@ -569,7 +578,31 @@ this at the top of the file:
 =item name NAME
 
 This lets you name sections of the output for showing/hiding using the
-<coming soon stuff>
+I<buttonbar> token.
+
+Sub-options for this include:
+
+=over
+
+=item level N
+
+Each named entry will get a E<LT>divE<GT> wrapper with a CSS classname
+of lvN attached to it.  This is useful for creating hierarchical sets
+of CSS-designable sections.  Deeper levels of N will nested within
+higher ones.  Additionally the buttonbar entries will be grouped into
+E<LT>spanE<GT> sections as well so they can be structured using CSS.
+
+=item hide 1
+
+If the hide sub-token is specified (and is non-zero) then this section
+will default to being hidden.
+
+=back
+
+=item buttonbar 1
+
+This token can be placed in the output and a bar of buttons that
+toggle on/off sections of the page will be created.
 
 =item ignore REGEXP
 
