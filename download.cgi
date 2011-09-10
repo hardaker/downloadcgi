@@ -57,7 +57,7 @@ sub print_results {
 	} elsif ($rule->{'type'} eq 'printfile') {
 	    print_file($rule->{'expression'});
 	} elsif ($rule->{'type'} eq 'buttonbar') {
-	    print_button_bar();
+	    print_button_bar($rule);
 	} elsif ($rule->{'type'} eq 'name') {
 	    my $strippedName = simplify_name($rule->{'expression'});
 	    my $level = get_param($rule, 'level', 1);
@@ -338,15 +338,24 @@ sub load_files {
 }
 
 sub print_button_bar {
+    my ($rule) = @_;
     print "<div class=\"buttonbar\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
 	return;
     }
-    print "Show: ";
+
+    my @levelButtons;
+
+    print "<span class=\"buttonbartitle\">Show: </span>\n";
     foreach my $name (@names) {
 	my $strippedName = simplify_name($name->{'expression'});
-	print "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
+	$levelButtons[get_param($name, 'level', 1)] .=
+	    "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
+    }
+    foreach my $levelset (@levelButtons) {
+	next if ($levelset eq '');
+	print "<span class=\"buttonbarsection\">$levelset</span>\n";
     }
 
     print '<script>$(document).ready(function() {',"\n";
