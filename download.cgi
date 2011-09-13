@@ -95,10 +95,10 @@ sub print_results {
 		foreach my $file (@files) {
 		    my $matches = 0;
 		    foreach my $suffix (@suffixes) {
-			if ($file =~ /(.*)$suffix$/) {
+			if ($file =~ /(.*)($suffix)$/) {
 			    # matches a known suffix; store the base file name
 			    # and the suffix to go with it
-			    $newfiles{$1}{$suffix} = $file;
+			    $newfiles{$1}{$2} = $file;
 			    $matches++;
 			}
 		    }
@@ -148,12 +148,12 @@ sub print_results {
 		}
 		$lastversion = $version;
 
-		if ($suffixes) {
+		if ($suffixes && exists($newfiles{$file})) {
 		    my $result = "<li>";
 		    my $linkformat = "<a href=\"%s\">%s</a>";
 		    my $count = 0;
-		    foreach my $suffix (@suffixes) {
-			next if (!exists($newfiles{$file}{$suffix}));
+		    foreach my $suffix (sort keys(%{$newfiles{$file}})) {
+			$suffix = "" if ($suffix eq '__left');
 			if ($count == 0) {
 			    print $prefix;
 			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "$file$suffix");
@@ -192,6 +192,7 @@ sub print_results {
 #   x-y-aoeu-auoe-5.4.3.pre1.tar.gz
 #   x-y-aoeu-auoe-5.4.3.pre1-4.rpm
 #   x-y-aoeu-auoe-5.4.3.pre1-4.rpm
+#   dnssec-tools-libs-devel-1.10-1.fc15.x86_64.rpm 
 
 sub find_version {
     # fetches the version number out of the first (and only) argument
@@ -202,11 +203,17 @@ sub find_version {
 
     # find the base package version number
     my $version;
-    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+|fc\d+|i386|ppc)[-\.])//) {
+    # matches
+    #  	 NUMBER
+    #  	 'p'NUMBER
+    #  	 'rc'NUMBER
+    #  	 'pre'NUMBER
+    # (plus a trailing dot or slash)
+    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+)[-\.])//) {
 	$version .= $1;
     }
 
-    if ($package =~ /\d+$/) {
+    if ($package =~ /^\d+$/) {
 	# all numbers left
 	$version .= $package;
     }
