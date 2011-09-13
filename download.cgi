@@ -700,12 +700,39 @@ E<LT>spanE<GT> sections as well so they can be structured using CSS.
 If the hide sub-token is specified (and is non-zero) then this section
 will default to being hidden.
 
+=item hideunless STRING
+
+This lets the entry be hidden by default unless the browser's
+usage-agent matches a particular string.  This is most useful when
+STRING contains things like "Linux", "Windows" and "Macintosh" so that
+only sections are shown that match the operating system of the user.
+
 =back
+
+=item h1 TITLE, h2 TITLE, h3 TITLE, ... hN TITLE, ...
+
+This is a convenience token that translates the results into the
+equivalent of:
+
+  name TITLE
+    level N
+    [any other specified options]
+  print <a name="gotoTITLE" />
+  print <hN>TITLE</hN>
 
 =item buttonbar 1
 
 This token can be placed in the output and a bar of buttons that
 toggle on/off sections of the page will be created.
+
+=over
+
+=item maxlevel N
+
+If the I<maxlevel> token is applied to the buttonbar line, then no
+buttons at a deth greater than N will be printed.  This is useful when
+you have a big hierarchy and the buttons get too messy with all of
+them showing up showing.
 
 =item ignore REGEXP
 
