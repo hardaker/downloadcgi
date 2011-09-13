@@ -453,18 +453,8 @@ sub print_button_bar {
 	}
     }
 
-    print "
-          \$(\"\#olderVersionsButton\").click(function() {
-                     if ( \$(\"\.olderVersions\").is(\":visible\") ) {
-                       \$(\".olderVersions\").hide(200);
-                       \$(\"\#olderVersionsButton\").css(\"background-color\",\"\#fff\");
-                     } else {
-                       \$(\".olderVersions\").show(200);
-                       \$(\"\#olderVersionsButton\").css(\"background-color\",\"\#aaf\");
-                     }
-              });
-          ";
-    print "\$(\"#olderVersionsButton\").click();";
+    print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\"); });\n";
+    print "toggleIt(\"olderVersions\");";
 
     print "});</script>\n";
 
