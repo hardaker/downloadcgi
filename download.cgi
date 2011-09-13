@@ -19,6 +19,7 @@ foreach my $i (1..9) {
     $aliases{"h" . $i} = [
 	"name %s",
 	"  level $i",
+        "INHERIT",
 	"print <a name=\"goto%s\" />",
 	"print <h$i>%s</h$i>",
 	];
@@ -368,7 +369,7 @@ sub load_rules {
 		if ($aliaspart eq 'INHERIT') {
 		    foreach my $key (keys(%$rule)) {
 			next if ($key eq 'type' || $key eq 'expression');
-			$newrules[$#newrules]{$key} = $rule->{'key'};
+			$newrules[$#newrules]{$key} = $rule->{$key};
 		    }
 		} else {
 		    add_rule_from_line(sprintf($aliaspart,
