@@ -13,6 +13,16 @@ my $orderrules = "$downloaddir/$rulesfilename";
 my %stuff;
 my @rules;
 our @names;
+my %aliases;
+
+foreach my $i (1..9) {
+    $aliases{"h" . $i} = [
+	"name %s",
+	"  level $i",
+	"print <a name=\"goto%s\" />",
+	"print <h$i>%s</h$i>",
+	];
+}
 
 my %globalvars;
 
@@ -83,12 +93,18 @@ sub print_results {
 
 		# process the list of suffixes to group them together
 		foreach my $file (@files) {
+		    my $matches = 0;
 		    foreach my $suffix (@suffixes) {
 			if ($file =~ /(.*)$suffix$/) {
+			    # matches a known suffix; store the base file name
+			    # and the suffix to go with it
 			    $newfiles{$1}{$suffix} = $file;
-			} else {
-			    $newfiles{$1}{'__left'} = $file;
+			    $matches++;
 			}
+		    }
+		    if ($matches == 0) {
+			# no suffix matches; take the whole file
+			$newfiles{$file}{'__left'} = $file;
 		    }
 		}
 
@@ -157,7 +173,7 @@ sub print_results {
 	    if (! $firstItem) {
 		print "</div>\n";
 	    }
-	    if (defined($lastversion) || $suffixes) {
+	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
 		print "  </ul>\n" ;
 	    }
 	    print "</ul>\n";
@@ -308,16 +324,29 @@ sub load_rules {
 	# skip comments and blank lines
 	next if (/^\s*#/ || /^\s*$/);
 
-	chomp();
+	my @lines = ($_);
 	my @ruledata = (/^\s*(\S+)\s+(.*)/);
 
-	# if the line begins with white-space, it's an extra parameter
-	if (/^\s+/) {
-	    $rules[$#rules]->{$ruledata[0]} = $ruledata[1];
-	    next;
+	# check for certain "alias expansions"
+	if (defined($aliases{$ruledata[0]})) {
+	    @lines = ();
+	    foreach my $alias (@{$aliases{$ruledata[0]}}) {
+		push @lines, sprintf($alias, $ruledata[1]);
+	    }
 	}
+	
+	foreach (@lines) { 
+	    chomp();
+	    @ruledata = (/^\s*(\S+)\s+(.*)/);
 
-	push @rules, { type => $ruledata[0], expression => $ruledata[1] };
+	    # if the line begins with white-space, it's an extra parameter
+	    if (/^\s+/) {
+		$rules[$#rules]->{$ruledata[0]} = $ruledata[1];
+		next;
+	    }
+
+	    push @rules, { type => $ruledata[0], expression => $ruledata[1] };
+	}
     }
     $fileh->close();
 }
