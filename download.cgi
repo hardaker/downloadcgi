@@ -113,19 +113,25 @@ sub print_results {
 	    print "<ul>\n";
 	    foreach my $file (@files) {
 		my $prefix = "";
-		if (get_param($rule, 'versionspaces') || get_param($rule, 'versionheaders')) {
-		    my $version = find_version($file);
-		    if (defined($lastversion) && $lastversion ne $version) {
+		my $version = find_version($file);
+
+		if (defined($lastversion) && $lastversion ne $version) {
+		    if (get_param($rule, 'versionspaces')) {
 			$prefix = "<br />\n";
 		    }
 		    if (get_param($rule, 'versionheaders')) {
-			if ($lastversion ne $version) {
-			    $prefix .= "</ul>\n" if (defined($lastversion));
-			    $prefix .= "<li>$version</li>\n<ul>\n";
-			}
+			$prefix .= "</ul>\n" if (defined($lastversion));
 		    }
-		    $lastversion = $version;
+		    if ($firstItem) {
+			$prefix .= "<div class=\"olderVersions\">\n";
+			$firstItem = 0;
+		    }
+		    if (get_param($rule, 'versionheaders')) {
+			$prefix .= "<li>$version</li>\n<ul>\n";
+		    }
 		}
+		$lastversion = $version;
+
 		if ($suffixes) {
 		    my $result = "<li>";
 		    my $linkformat = "<a href=\"%s\">%s</a>";
@@ -147,15 +153,13 @@ sub print_results {
 		} else {
 		    printf($format, $file, $file);
 		}
-		if ($firstItem) {
-		    print "<div class=\"olderVersions\">\n";
-		    $firstItem = 0;
-		}
 	    }
 	    if (! $firstItem) {
 		print "</div>\n";
 	    }
-	    print "  </ul>\n" if (defined($lastversion) || $suffixes);
+	    if (defined($lastversion) || $suffixes) {
+		print "  </ul>\n" ;
+	    }
 	    print "</ul>\n";
 	} elsif ($rule->{'type'} eq 'ignore') {
 	    # no op
@@ -182,7 +186,14 @@ sub find_version {
 
     # find the base package version number
     my $version;
-    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+|fc\d+|i386|ppc)[-\.])//) { $version .= $1; }
+    while ($package =~ s/^((\d+|\d+p\d+|rc\d+|pre\d+|fc\d+|i386|ppc)[-\.])//) {
+	$version .= $1;
+    }
+
+    if ($package =~ /\d+$/) {
+	# all numbers left
+	$version .= $package;
+    }
 
     # strip off the potential trailing . or -
     $version =~ s/[-\.]$//;
@@ -372,6 +383,9 @@ sub print_button_bar {
 	print "$startText<td class=\"buttonbarsection\">$levelset</td><tr />\n";
 	$startText = "<tr>";
     }
+
+    print "$startText<td class=\"buttonbarsection\"><a class=\"hideshow\" href=\"#\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
+
     print "</table>\n";
 
     # my $strippedName = simplify_name($name->{'expression'});
@@ -399,6 +413,20 @@ sub print_button_bar {
 	    print "\$(\"#${strippedName}Button\").click();"
 	}
     }
+
+    print "
+          \$(\"\#olderVersionsButton\").click(function() {
+                     if ( \$(\"\.olderVersions\").is(\":visible\") ) {
+                       \$(\".olderVersions\").hide(200);
+                       \$(\"\#olderVersionsButton\").css(\"background-color\",\"\#fff\");
+                     } else {
+                       \$(\".olderVersions\").show(200);
+                       \$(\"\#olderVersionsButton\").css(\"background-color\",\"\#aaf\");
+                     }
+              });
+          ";
+    print "\$(\"#olderVersionsButton\").click();";
+
     print "});</script>\n";
 
     print "</div>\n";
