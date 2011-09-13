@@ -317,6 +317,22 @@ sub match_rule {
     print STDERR "Download ERROR: unmatched file in download directory: $file\n";
 }
 
+sub add_rule_from_line {
+    my ($line, $ruleset) = @_;
+
+    my @ruledata = ($line =~ /^\s*(\S+)\s+(.*)/);
+
+    # if the line begins with white-space, it's an extra parameter
+    if ($line =~ /^\s+/) {
+	$ruleset->[$#$ruleset]{$ruledata[0]} = $ruledata[1];
+	return;
+    }
+
+    push @$ruleset, { type => $ruledata[0], expression => $ruledata[1] };
+}
+
+    
+
 sub load_rules {
     #
     # load the RULES file
@@ -334,28 +350,37 @@ sub load_rules {
 	my @lines = ($_);
 	my @ruledata = (/^\s*(\S+)\s+(.*)/);
 
-	# check for certain "alias expansions"
-	if (defined($aliases{$ruledata[0]})) {
-	    @lines = ();
-	    foreach my $alias (@{$aliases{$ruledata[0]}}) {
-		push @lines, sprintf($alias, $ruledata[1]);
-	    }
-	}
-	
 	foreach (@lines) { 
 	    chomp();
-	    @ruledata = (/^\s*(\S+)\s+(.*)/);
-
-	    # if the line begins with white-space, it's an extra parameter
-	    if (/^\s+/) {
-		$rules[$#rules]->{$ruledata[0]} = $ruledata[1];
-		next;
-	    }
-
-	    push @rules, { type => $ruledata[0], expression => $ruledata[1] };
+	    add_rule_from_line($_, \@rules);
 	}
     }
     $fileh->close();
+
+    # post-process the rules to handle alias expansion
+    my @newrules;
+    foreach my $rule (@rules) {
+	if (exists($aliases{$rule->{'type'}})) {
+	    # we expand this to a bunch of replacement rules.
+	    foreach my $aliaspart (@{$aliases{$rule->{'type'}}}) {
+		# lines marked INHERIT mean the current rule gets the additional
+		# parts from the original rule
+		if ($aliaspart eq 'INHERIT') {
+		    foreach my $key (keys(%$rule)) {
+			next if ($key eq 'type' || $key eq 'expression');
+			$newrules[$#newrules]{$key} = $rule->{'key'};
+		    }
+		} else {
+		    add_rule_from_line(sprintf($aliaspart,
+					       $rule->{'expression'}),
+				       \@newrules);
+		}
+	    }
+	} else {
+	    push @newrules, $rule;
+	}
+    }
+    @rules = @newrules;
 }
 
 sub load_files {
@@ -436,7 +461,7 @@ sub print_button_bar {
                  $("#" + name + "Button").css("background-color","#fff");
                } else {
                  $("." + name).show(200);
-                 $("#" + name + "Button").css("background-color","#aaf");
+                 $("#" + name + "Button").css("background-color","#ccf");
                }
            }', "\n";
 
