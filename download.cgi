@@ -440,8 +440,11 @@ sub print_button_bar {
     }
 
     my $startText = "";
+    my $levelcount = 0;
+    my $maxlevel = get_param($rule, 'maxlevel', 100);
     foreach my $levelset (@levelButtons) {
 	next if ($levelset eq '');
+	last if (++$levelcount > $maxlevel);
 	print "$startText<td class=\"buttonbarsection\">$levelset</td><tr />\n";
 	$startText = "<tr>";
     }
