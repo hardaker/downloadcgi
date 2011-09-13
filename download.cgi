@@ -104,6 +104,8 @@ sub print_results {
 		@files = sort sort_version_before_package @files;
 	    }
 
+	    my $firstItem = 1;
+
 	    # XXX: allow other rule-defined formats
 	    my $format = " <li><a href=\"%s\">%s</a></li>\n";
 
@@ -145,6 +147,13 @@ sub print_results {
 		} else {
 		    printf($format, $file, $file);
 		}
+		if ($firstItem) {
+		    print "<div class=\"olderVersions\">\n";
+		    $firstItem = 0;
+		}
+	    }
+	    if (! $firstItem) {
+		print "</div>\n";
 	    }
 	    print "  </ul>\n" if (defined($lastversion) || $suffixes);
 	    print "</ul>\n";
@@ -347,7 +356,7 @@ sub print_button_bar {
     my @levelButtons;
     my %doneName;
 
-    print "<span class=\"buttonbartitle\">Show: </span>\n";
+    print "<table border=0 class=\"hideshowbuttons\"><tr><td class=\"buttonbartitle\" rowspan=\"100\">Show:</td>\n";
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}});
 	$doneName{$name->{'expression'}} = 1;
@@ -356,10 +365,18 @@ sub print_button_bar {
 	$levelButtons[get_param($name, 'level', 1)] .=
 	    "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
     }
+
+    my $startText = "";
     foreach my $levelset (@levelButtons) {
 	next if ($levelset eq '');
-	print "<span class=\"buttonbarsection\">$levelset</span>\n";
+	print "$startText<td class=\"buttonbarsection\">$levelset</td><tr />\n";
+	$startText = "<tr>";
     }
+    print "</table>\n";
+
+    # my $strippedName = simplify_name($name->{'expression'});
+    # $levelButtons[get_param($name, 'level', 1)] .=
+    # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
     print '<script>$(document).ready(function() {',"\n";
     foreach my $name (@names) {
