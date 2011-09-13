@@ -409,8 +409,10 @@ sub print_button_bar {
                      }
               });
           ";
-	if ($name->{'hide'}) {
-	    print "\$(\"#${strippedName}Button\").click();"
+	if ($name->{'hide'} ||
+	    ($name->{'hideunless'} &&
+	     $ENV{'HTTP_USER_AGENT'} !~ /$name->{'hideunless'}/)) {
+	    print "\$(\"#${strippedName}Button\").click();";
 	}
     }
 
