@@ -139,7 +139,7 @@ sub print_results {
 			$prefix .= "</ul>\n" if (defined($lastversion));
 		    }
 		    if ($firstItem) {
-			$prefix .= "<div class=\"olderVersions\">\n";
+			$prefix .= "</ul><div class=\"olderVersions\"><ul>\n";
 			$firstItem = 0;
 		    }
 		    if (get_param($rule, 'versionheaders')) {
@@ -170,13 +170,13 @@ sub print_results {
 		    printf($format, $file, $file);
 		}
 	    }
+	    print "</ul>\n";
 	    if (! $firstItem) {
 		print "</div>\n";
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
 		print "  </ul>\n" ;
 	    }
-	    print "</ul>\n";
 	} elsif ($rule->{'type'} eq 'ignore') {
 	    # no op
 	} else {
