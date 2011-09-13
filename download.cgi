@@ -367,7 +367,7 @@ sub print_button_bar {
     my @levelButtons;
     my %doneName;
 
-    print "<table border=0 class=\"hideshowbuttons\"><tr><td class=\"buttonbartitle\" rowspan=\"100\">Show:</td>\n";
+    print "<table border=0 class=\"hideshowbuttons\"><tr><td class=\"buttonbartitle\" rowspan=\"100\">Show Files:</td>\n";
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}});
 	$doneName{$name->{'expression'}} = 1;
