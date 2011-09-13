@@ -429,22 +429,23 @@ sub print_button_bar {
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
     print '<script>$(document).ready(function() {',"\n";
+
+    print 'function toggleIt(name) {
+               if ( $("." + name).is(":visible") ) {
+                 $("." + name).hide(200);
+                 $("#" + name + "Button").css("background-color","#fff");
+               } else {
+                 $("." + name).show(200);
+                 $("#" + name + "Button").css("background-color","#aaf");
+               }
+           }', "\n";
+
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}} == 2);
 	$doneName{$name->{'expression'}} = 2;
 
 	my $strippedName = simplify_name($name->{'expression'});
-        print "
-          \$(\"\#${strippedName}Button\").click(function() {
-                     if ( \$(\"\.${strippedName}\").is(\":visible\") ) {
-                       \$(\".${strippedName}\").hide(200);
-                       \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#fff\");
-                     } else {
-                       \$(\".${strippedName}\").show(200);
-                       \$(\"\#${strippedName}Button\").css(\"background-color\",\"\#aaf\");
-                     }
-              });
-          ";
+        print "\$(\"\#${strippedName}Button\").click(function() { toggleIt(\"${strippedName}\"); });\n";
 	if ($name->{'hide'} ||
 	    ($name->{'hideunless'} &&
 	     $ENV{'HTTP_USER_AGENT'} !~ /$name->{'hideunless'}/)) {
