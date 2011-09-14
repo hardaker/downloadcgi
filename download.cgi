@@ -60,6 +60,7 @@ sub print_results {
 	}
     }
 
+    my @nameList;
     foreach my $rule (@rules) {
 	my $lastversion;
 
@@ -72,12 +73,29 @@ sub print_results {
 	} elsif ($rule->{'type'} eq 'name') {
 	    my $strippedName = simplify_name($rule->{'expression'});
 	    my $level = get_param($rule, 'level', 1);
+
 	    if ($currentLevel >= $level) {
 		print "</div>\n" x ($currentLevel - $level + 1);
 	    } elsif ($currentLevel < $level) {
 		print "<div>\n" x ($level - $currentLevel - 1 );
 	    }
+
+	    # if ($currentLevel >= $level) {
+	    # 	while ($currentLevel-- >= $level) {
+	    # 	    my $name = pop @nameList;
+	    # 	    print "</div>\n";
+	    # 	    if (defined($name) && $name ne '') {
+	    # 		print "<a href=\"#\" class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</a>\n";
+	    # 	    }
+	    # 	}
+	    # } else {
+	    # 	while($currentLevel++ < $level) {
+	    # 	    print "<div>\n";
+	    # 	    push @nameList, '';
+	    # 	}
+	    # }
 	    print "<div class=\"downloadName lv$level $strippedName\">\n";
+	    push @nameList, "$strippedName";
 	    $currentLevel = $level;
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
@@ -140,7 +158,11 @@ sub print_results {
 			$prefix .= "</ul>\n" if (defined($lastversion));
 		    }
 		    if ($firstItem) {
-			$prefix .= "</ul><div class=\"olderVersions\"><ul>\n";
+			$prefix .= "</ul>";
+			$prefix .= "<div ";
+			$prefix .= "id=\"$nameList[$#nameList]OlderVersion\" "
+			    if ($nameList[$#nameList] ne '');
+			$prefix .= "class=\"olderVersions\"><ul>\n";
 			$firstItem = 0;
 		    }
 		    if (get_param($rule, 'versionheaders')) {
@@ -173,7 +195,11 @@ sub print_results {
 	    }
 	    print "</ul>\n";
 	    if (! $firstItem) {
+		my $name = $nameList[$#nameList];
 		print "</div>\n";
+		if (defined($name) && $name ne '') {
+		    print "<a href=\"#\" class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</a>\n";
+		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
 		print "  </ul>\n" ;
@@ -457,17 +483,32 @@ sub print_button_bar {
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
-    print '<script>$(document).ready(function() {',"\n";
+    print '<script>',"\n";
 
-    print 'function toggleIt(name) {
+    print 'function toggleIt(name, opposite, same) {
                if ( $("." + name).is(":visible") ) {
                  $("." + name).hide(200);
+                 $("#" + name).hide(200);
+                 $("#" + name + "MoreButton").show(200);
                  $("#" + name + "Button").css("background-color","#fff");
+                 if (opposite) {
+                   $("." + opposite).show(200);
+                 }
+                 if (same) {
+                   $("." + same).hide(200);
+                 }
                } else {
                  $("." + name).show(200);
+                 $("#" + name).show(200);
+                 $("#" + name + "MoreButton").hide(200);
                  $("#" + name + "Button").css("background-color","#ccf");
+                 if (same) {
+                   $("." + same).show(200);
+                 }
                }
            }', "\n";
+
+    print '$(document).ready(function() {',"\n";
 
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}} == 2);
@@ -482,7 +523,7 @@ sub print_button_bar {
 	}
     }
 
-    print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\"); });\n";
+    print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\", \"moreButton\"); });\n";
     print "toggleIt(\"olderVersions\");";
 
     print "});</script>\n";
