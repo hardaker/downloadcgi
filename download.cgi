@@ -80,20 +80,6 @@ sub print_results {
 		print "<div>\n" x ($level - $currentLevel - 1 );
 	    }
 
-	    # if ($currentLevel >= $level) {
-	    # 	while ($currentLevel-- >= $level) {
-	    # 	    my $name = pop @nameList;
-	    # 	    print "</div>\n";
-	    # 	    if (defined($name) && $name ne '') {
-	    # 		print "<a href=\"#\" class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</a>\n";
-	    # 	    }
-	    # 	}
-	    # } else {
-	    # 	while($currentLevel++ < $level) {
-	    # 	    print "<div>\n";
-	    # 	    push @nameList, '';
-	    # 	}
-	    # }
 	    print "<div class=\"downloadName lv$level $strippedName\">\n";
 	    push @nameList, "$strippedName";
 	    $currentLevel = $level;
