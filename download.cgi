@@ -448,7 +448,7 @@ sub print_button_bar {
 
 	my $strippedName = simplify_name($name->{'expression'});
 	$levelButtons[get_param($name, 'level', 1)] .=
-	    "  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
+	    "  <span class=\"hideshow\" id=\"${strippedName}Button\">$name->{expression}</span>\n";
     }
 
     my $startText = "";
