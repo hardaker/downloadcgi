@@ -184,7 +184,7 @@ sub print_results {
 		my $name = $nameList[$#nameList];
 		print "</div>\n";
 		if (defined($name) && $name ne '') {
-		    print "<a href=\"#\" class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</a>\n";
+		    print "<span class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</span>\n";
 		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
