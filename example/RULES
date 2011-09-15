@@ -1,0 +1,34 @@
+global level 2
+global showdates 1
+global suffixes .txt .exe .rpm .dmg
+
+printfile top.html
+
+buttonbar 1
+  maxlevel 3
+  
+h1 Download Something!
+
+# remember that 'list' uses regexps, not globs (IE, not *.txt)!
+h2 Text Files
+list .*.txt
+
+h2 OS Files
+
+h3 Windows
+  hideunless Windows
+list .*.exe
+
+h3 Linux
+  hideunless Linux
+list .*.rpm
+
+h3 Mac OSX
+  hideunless Macintosh
+list .*.dmg
+
+ignore .*~
+ignore .*.bak
+ignore RULES
+ignore index.cgi.*
+ignore .*.html

@@ -1,0 +1,111 @@
+.hideshowbuttons {
+  border-width: 0px;
+}
+.hideshowbuttons td {
+  border-width: 0px;
+}
+.hideshow {
+  margin: 5px;
+  padding: 2px 5px 2px 5px;
+  background-color: #ccf;
+  border-width: 2px;
+  border-color: #888;
+  border-style: solid;
+  border-radius: 15px;
+  font-size: .8em;
+  cusror: pointer;
+}
+.buttonbartitle {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.buttonbar {
+  border-width: 2px 0px 2px 0px;
+  border-style: solid;
+  border-color: #000;
+  padding: 15px;
+  font-size: 1.2em;
+}
+.buttonbarsection {
+    border-width: 0px 0px 0px 0px;
+    border-style: solid;
+    border-color: #000;
+    background-color: #eef;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+.downloadName {
+  margin: 20px;
+  background-color: #ddd;
+  border-style: solid;
+  border-color: #bbb;
+  border-width: 1px;
+  border-radius: 20px;
+  padding: 0px 5px 0px 5px;
+}
+.lv2 {
+  background-color: #eee;
+}
+.lv3 {
+  background-color: #ddd;
+}
+.lv4 {
+  background-color: #eee;
+}
+.lv5 {
+    background-color: #e0e0e0;
+}
+.lv1, .lv2, .lv3, .lv4, .lv5, .lv6, .lv7, .lv8, lv9 {
+    padding: 3px 0px 3px 0px;
+}
+
+h1 { 
+  border-radius: 15px;
+  color:   #fff;
+  border-width: 0px 0px 4 0px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: .5em;
+  border-style: solid;
+  border-color: #88e;
+  background-color: #99f;
+}
+
+h2, h3, h4, h5, h6, h6, h7 {
+    border-radius: 10px;
+    padding-left: .5em;
+    padding-top: 3px;
+}
+
+h4, h5, h6, h6, h7 {
+    text-decoration: underline;
+}
+
+h2, h3 {
+    border-style: solid;
+    border-width: 0px 0px 2px 0px;
+    padding-left: .5em;
+}
+
+.moreButton {
+  float: right;
+  clear: right;
+  margin-top: -1em;
+  margin-right: 2em;
+  text-decoration: underline;
+  cusror: pointer;
+  color: #a22;
+}
+
+.dcgiFileDate {
+    float: right;
+    clear: right;
+    color: #888;
+    font-style: italic;
+}
+
+A:link.hideshow    { text-decoration: none; 	   color: #000; }
+A:visited.hideshow { text-decoration: none; 	   color: #000; }
+A:active.active    { text-decoration: none; 	   color: #eef; }
+A:hover.hideshow   { text-decoration: underline; color: #eef; }
