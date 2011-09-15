@@ -814,6 +814,14 @@ The following features would be 'nice to haves:'
 - hover notes
 - caching of data for speed (based on directory modification time)
 
+=head1 EXAMPLE
+
+See the I<example> directory for an example rule set and files to test
+with.  Start by looking at the RULES file.  If you want to test the
+directory, place it in a web server, copy the download.cgi script into
+it (I suggest naming it index.cgi so the web server will automatically
+pick it up as an index) and then point your web browser at it.
+
 =head1 AUTHOR
 
 Wes Hardaker E<lt>opensource AT hardakers DOT netE<gt>
