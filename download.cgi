@@ -126,9 +126,10 @@ sub print_results {
 	    }
 
 	    my $firstItem = 1;
+	    my $showdates = get_param($rule, 'showdates', 1);
 
 	    # XXX: allow other rule-defined formats
-	    my $format = " <li><a href=\"%s\">%s</a></li>\n";
+	    my $format = " <li><a href=\"%s\">%s</a>%s</li>\n";
 
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
@@ -161,8 +162,10 @@ sub print_results {
 		    my $result = "<li>";
 		    my $linkformat = "<a href=\"%s\">%s</a>";
 		    my $count = 0;
+		    my $firstsuffix;
 		    foreach my $suffix (sort keys(%{$newfiles{$file}})) {
 			$suffix = "" if ($suffix eq '__left');
+			$firstsuffix = $suffix if (!defined($firstsuffix));
 			if ($count == 0) {
 			    print $prefix;
 			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "$file$suffix");
@@ -173,9 +176,29 @@ sub print_results {
 			$count++;
 		    }
 		    next if ($count == 0);
+
+		    if ($showdates) {
+			my @dateinfo = 
+			    localtime((stat("$downloaddir/$file$firstsuffix"))[9]);
+			$result .= " <span class=\"dcgiFileDate\">(" .
+			    ($dateinfo[5] + 1900) . "-" . 
+			    ($dateinfo[4] + 1) . "-" .
+			    ($dateinfo[3]) . ")</span>";
+		    }
+
 		    $result .= "</li>\n";
 		    print $result;
 		} else {
+		    my $dateinfo = "";
+		    if ($showdates) {
+			my @dateinfo = 
+			    localtime((stat("$downloaddir/$file"))[9]);
+			$dateinfo .= " <span class=\"dcgiFileDate\">(" .
+			    ($dateinfo[5] + 1900) . "-" . 
+			    ($dateinfo[4] + 1) . "-" .
+			    ($dateinfo[3]) . ")</span>";
+		    }
+
 		    printf($format, $file, $file);
 		}
 	    }
