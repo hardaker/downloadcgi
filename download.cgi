@@ -804,6 +804,18 @@ This will likely only work with apache as the script expects the
 SCRIPT_FILENAME environment variable to be set, which may be an
 apache-ism.
 
+The output is rather plain unless some CSS rules are applied.  See the
+I<download-style.css> file in the I<example> directory for a starting
+set of CSS rules to add to the results.
+
+=head1 EXAMPLE
+
+See the I<example> directory for an example rule set and files to test
+with.  Start by looking at the RULES file.  If you want to test the
+directory, place it in a web server, copy the download.cgi script into
+it (I suggest naming it index.cgi so the web server will automatically
+pick it up as an index) and then point your web browser at it.
+
 =head1 TODO
 
 The following features would be 'nice to haves:' 
@@ -813,14 +825,6 @@ The following features would be 'nice to haves:'
 - generic list formatting mechanism 
 - hover notes
 - caching of data for speed (based on directory modification time)
-
-=head1 EXAMPLE
-
-See the I<example> directory for an example rule set and files to test
-with.  Start by looking at the RULES file.  If you want to test the
-directory, place it in a web server, copy the download.cgi script into
-it (I suggest naming it index.cgi so the web server will automatically
-pick it up as an index) and then point your web browser at it.
 
 =head1 AUTHOR
 
