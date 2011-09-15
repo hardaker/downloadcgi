@@ -126,7 +126,7 @@ sub print_results {
 	    }
 
 	    my $firstItem = 1;
-	    my $showdates = get_param($rule, 'showdates', 1);
+	    my $showdates = get_param($rule, 'showdates', 0);
 
 	    # XXX: allow other rule-defined formats
 	    my $format = " <li><a href=\"%s\">%s</a>%s</li>\n";
@@ -716,6 +716,12 @@ Will offer all downloads on a single lien that will look roughly like:
 
 (assuming all the files were available, otherwise the missing ones are
 excluded)
+
+=item showdates 1
+
+This will add the date for the last modification time of the file.  If
+this is desired for all lists, use the 'global' property to set this
+globally.
 
 =back
 
