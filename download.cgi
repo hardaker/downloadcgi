@@ -89,7 +89,7 @@ sub print_results {
 		print "<div>\n" x ($level - $currentLevel - 1 );
 	    }
 
-	    print "<div class=\"downloadName lv$level $strippedName\">\n";
+	    print "<div class=\"dcgiDownloadName dcgiLevel$level $strippedName\">\n";
 	    push @nameList, "$strippedName";
 	    $currentLevel = $level;
 
@@ -219,7 +219,7 @@ sub print_results {
 		my $name = $nameList[$#nameList];
 		print "</div>\n";
 		if (defined($name) && $name ne '') {
-		    print "<span class=\"moreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</span>\n";
+		    print "<span class=\"dcgiMoreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</span>\n";
 		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
@@ -480,7 +480,7 @@ sub load_files {
 
 sub print_button_bar {
     my ($rule) = @_;
-    print "<div class=\"buttonbar\">\n";
+    print "<div class=\"dcgiButtonBarContainer\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
 	return;
@@ -489,14 +489,14 @@ sub print_button_bar {
     my @levelButtons;
     my %doneName;
 
-    print "<table border=0 class=\"hideshowbuttons\"><tr><td class=\"buttonbartitle\" rowspan=\"100\">Show Files:</td>\n";
+    print "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">Show Files:</td>\n";
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}});
 	$doneName{$name->{'expression'}} = 1;
 
 	my $strippedName = simplify_name($name->{'expression'});
 	$levelButtons[get_param($name, 'level', 1)] .=
-	    "  <span class=\"hideshow\" id=\"${strippedName}Button\">$name->{expression}</span>\n";
+	    "  <span class=\"dcgiHideShowButton\" id=\"${strippedName}Button\">$name->{expression}</span>\n";
     }
 
     my $startText = "";
@@ -505,11 +505,11 @@ sub print_button_bar {
     foreach my $levelset (@levelButtons) {
 	next if ($levelset eq '');
 	last if (++$levelcount > $maxlevel);
-	print "$startText<td class=\"buttonbarsection\">$levelset</td><tr />\n";
+	print "$startText<td class=\"dcgiButtonBarSection\">$levelset</td><tr />\n";
 	$startText = "<tr>";
     }
 
-    print "$startText<td class=\"buttonbarsection\"><a class=\"hideshow\" href=\"#\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
+    print "$startText<td class=\"dcgiButtonBarSection\"><a class=\"hideshow\" href=\"#\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
 
     print "</table>\n";
 
@@ -771,7 +771,7 @@ Sub-options for this include:
 =item level N
 
 Each named entry will get a E<LT>divE<GT> wrapper with a CSS classname
-of lvN attached to it.  This is useful for creating hierarchical sets
+of dcgiLevelN attached to it.  This is useful for creating hierarchical sets
 of CSS-designable sections.  Deeper levels of N will nested within
 higher ones.  Additionally the buttonbar entries will be grouped into
 E<LT>spanE<GT> sections as well so they can be structured using CSS.

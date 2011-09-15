@@ -1,10 +1,10 @@
-.hideshowbuttons {
+.dcgiHideShowButtons {
   border-width: 0px;
 }
-.hideshowbuttons td {
+.dcgiHideShowButtons td {
   border-width: 0px;
 }
-.hideshow {
+.dcgiHideShowButton {
   margin: 5px;
   padding: 2px 5px 2px 5px;
   background-color: #ccf;
@@ -15,18 +15,18 @@
   font-size: .8em;
   cusror: pointer;
 }
-.buttonbartitle {
+.dcgiButtonBarTitle {
   font-size: 1.5em;
   font-weight: bold;
 }
-.buttonbar {
+.dcgiButtonBarContainer {
   border-width: 2px 0px 2px 0px;
   border-style: solid;
   border-color: #000;
   padding: 15px;
   font-size: 1.2em;
 }
-.buttonbarsection {
+.dcgiButtonBarSection {
     border-width: 0px 0px 0px 0px;
     border-style: solid;
     border-color: #000;
@@ -35,7 +35,7 @@
     margin-right: 5px;
     border-radius: 5px;
 }
-.downloadName {
+.dcgiDownloadName {
   margin: 20px;
   background-color: #ddd;
   border-style: solid;
@@ -44,19 +44,19 @@
   border-radius: 20px;
   padding: 0px 5px 0px 5px;
 }
-.lv2 {
+.dcgiLevel2 {
   background-color: #eee;
 }
-.lv3 {
+.dcgiLevel3 {
   background-color: #ddd;
 }
-.lv4 {
+.dcgiLevel4 {
   background-color: #eee;
 }
-.lv5 {
+.dcgiLevel5 {
     background-color: #e0e0e0;
 }
-.lv1, .lv2, .lv3, .lv4, .lv5, .lv6, .lv7, .lv8, lv9 {
+.dcgiLevel1, .dcgiLevel2, .dcgiLevel3, .dcgiLevel4, .dcgiLevel5, .dcgiLevel6, .dcgiLevel7, .dcgiLevel8, dcgiLevel9 {
     padding: 3px 0px 3px 0px;
 }
 
@@ -88,7 +88,7 @@ h2, h3 {
     padding-left: .5em;
 }
 
-.moreButton {
+.dcgiMoreButton {
   float: right;
   clear: right;
   margin-top: -1em;
