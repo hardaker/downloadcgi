@@ -782,6 +782,11 @@ equivalent of:
 This token can be placed in the output and a bar of buttons that
 toggle on/off sections of the page will be created.
 
+Because this makes use of jquery, you'll need to add a source line to
+the html header for pulling in the jquery code from somewher.  Such as:
+
+  print <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+
 =over
 
 =item maxlevel N
@@ -791,12 +796,12 @@ buttons at a deth greater than N will be printed.  This is useful when
 you have a big hierarchy and the buttons get too messy with all of
 them showing up showing.
 
+=back
+
 =item ignore REGEXP
 
 This allows files to be ignored so that error messages about unknown
 files don't get printed to the web server's error log.
-
-=back
 
 =head1 NOTES
 
