@@ -178,12 +178,8 @@ sub print_results {
 		    next if ($count == 0);
 
 		    if ($showdates) {
-			my @dateinfo = 
-			    localtime((stat("$downloaddir/$file$firstsuffix"))[9]);
-			$result .= " <span class=\"dcgiFileDate\">(" .
-			    ($dateinfo[5] + 1900) . "-" . 
-			    ($dateinfo[4] + 1) . "-" .
-			    ($dateinfo[3]) . ")</span>";
+			$result .= 
+			    get_date_string("$downloaddir/$file$firstsuffix");
 		    }
 
 		    $result .= "</li>\n";
@@ -191,12 +187,8 @@ sub print_results {
 		} else {
 		    my $dateinfo = "";
 		    if ($showdates) {
-			my @dateinfo = 
-			    localtime((stat("$downloaddir/$file"))[9]);
-			$dateinfo .= " <span class=\"dcgiFileDate\">(" .
-			    ($dateinfo[5] + 1900) . "-" . 
-			    ($dateinfo[4] + 1) . "-" .
-			    ($dateinfo[3]) . ")</span>";
+			$dateinfo = 
+			    get_date_string("$downloaddir/$file");
 		    }
 
 		    printf($format, $file, $file);
@@ -220,6 +212,15 @@ sub print_results {
 	}
     }
 }
+
+sub get_date_string {
+    my ($file) = @_;
+    my @dateinfo = localtime((stat("$file"))[9]);
+    return sprintf(" <span class=\"dcgiFileDate\">(%04d-%02d-%02d)</spann>",
+		   ($dateinfo[5] + 1900),
+		   ($dateinfo[4] + 1),
+		   ($dateinfo[3]));
+}    
 
 # find_version() works against at least these:
 #   net-snmp-5.4.tar.gz
