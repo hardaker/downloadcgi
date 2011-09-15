@@ -131,6 +131,8 @@ sub print_results {
 	    # XXX: allow other rule-defined formats
 	    my $format = " <li><a href=\"%s\">%s</a>%s</li>\n";
 
+	    my %donefile; # for catching duplicates
+
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
 	    foreach my $file (@files) {
@@ -166,6 +168,11 @@ sub print_results {
 		    foreach my $suffix (sort keys(%{$newfiles{$file}})) {
 			$suffix = "" if ($suffix eq '__left');
 			$firstsuffix = $suffix if (!defined($firstsuffix));
+
+			# catch duplicates from bad suffix configs
+			next if ($donefile{"$file$suffix"});
+			$donefile{"$file$suffix"} = 1;
+
 			if ($count == 0) {
 			    print $prefix;
 			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "$file$suffix");
