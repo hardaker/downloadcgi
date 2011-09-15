@@ -1,3 +1,6 @@
 The download.cgi package allows you to organize a download directory
 through the creation of a RULES file to help organize and structure
 the output.  See the download.cgi manual page for further details. 
+
+The 'exmaple' directory contains an example usage RULES file and data
+files to go with it.
