@@ -64,12 +64,21 @@ sub print_results {
     foreach my $rule (@rules) {
 	my $lastversion;
 
+	# print STUFF
 	if ($rule->{'type'} eq 'print') {
 	    print "$rule->{'expression'}","\n";
+
+	# printfile FILENAME
 	} elsif ($rule->{'type'} eq 'printfile') {
 	    print_file($rule->{'expression'});
+
+	# buttonbar: prints a list of toggle buttons
 	} elsif ($rule->{'type'} eq 'buttonbar') {
 	    print_button_bar($rule);
+
+        # name SOMETHING
+	# names a section (which puts it in a html div wrapper that the
+	# buttonbar will create buttons to show/hide it).
 	} elsif ($rule->{'type'} eq 'name') {
 	    my $strippedName = simplify_name($rule->{'expression'});
 	    my $level = get_param($rule, 'level', 1);
@@ -83,9 +92,13 @@ sub print_results {
 	    print "<div class=\"downloadName lv$level $strippedName\">\n";
 	    push @nameList, "$strippedName";
 	    $currentLevel = $level;
+
+	# global THINGY VALUE: Allow global settings that affect all the rules
 	} elsif ($rule->{'type'} eq 'global') {
 	    my ($left, $right) = ($rule->{'expression'} =~ (/^(\w+)\s+(.*)/));
 	    $globalvars{$left} = $right;
+
+        # list REGEXP: list a bunch of files matching a regexp
 	} elsif ($rule->{'type'} eq 'list') {
 	    next if ($#{$rule->{'files'}} == -1);
 	    my @files = @{$rule->{'files'}};
@@ -212,8 +225,12 @@ sub print_results {
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
 		print "  </ul>\n" ;
 	    }
+
+	# ignore REGEXP: ignores a files matching a particular expression
 	} elsif ($rule->{'type'} eq 'ignore') {
 	    # no op
+
+        # error: unknown rule type
 	} else {
 	    print STDERR "Download ERROR: unknownrule type $rule->{'type'}\n";
 	}
