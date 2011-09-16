@@ -189,13 +189,20 @@ sub print_results {
 			if ($count == 0) {
 			    print $prefix;
 			    $result .=
-				"<span class=\"dcgiLinks\"><span class=\"dcgiFirstLink\">" .
+				"<span class=\"dcgiLinks\"><div class=\"dcgiFirstLink\">" .
 				sprintf($linkformat, $newfiles{$file}{$suffix},
-					"$file$suffix") .
-					"</span>";
+					"$file$suffix");
+
+			    if ($showdates || 0) {
+				$result .= 
+				    get_date_string("$downloaddir/$file$firstsuffix");
+			    }
+
+			    $result .= "</div>";
+
 			} else {
-			    $result .= "&nbsp;&nbsp; | &nbsp;&nbsp;<span class=\"dcgiOtherLinks\">" if ($count == 1);
-			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "($suffix)");
+			    $result .= "<span class=\"dcgiOtherLinks\">" if ($count == 1);
+			    $result .= " <span class=\"dcgiOtherLink\">" . sprintf($linkformat, $newfiles{$file}{$suffix}, "($suffix)") . "</span>";
 			}
 			$count++;
 		    }
@@ -204,11 +211,6 @@ sub print_results {
 		    $result .= "</span>" if ($count => 1); # /dcgiOtherLinks
 
 		    $result .= "</span>"; # /dcgiLinks
-
-		    if ($showdates) {
-			$result .= 
-			    get_date_string("$downloaddir/$file$firstsuffix");
-		    }
 
 		    $result .= "</li>\n";
 		    print $result;
