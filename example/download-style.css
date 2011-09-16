@@ -13,7 +13,7 @@
   border-style: solid;
   border-radius: 15px;
   font-size: .8em;
-  cusror: pointer;
+  cursor: pointer;
   white-space: nowrap;
   display: inline-block;
 }
@@ -96,7 +96,7 @@ h2, h3 {
   margin-top: -1em;
   margin-right: 2em;
   text-decoration: underline;
-  cusror: pointer;
+  cursor: pointer;
   color: #a22;
 }
 
@@ -106,9 +106,8 @@ h2, h3 {
   margin-top: -1em;
   margin-right: 2em;
   text-decoration: underline;
-  cusror: pointer;
+  cursor: pointer;
   color: #a22;
-  display: hidden;
 }
 
 .dcgiFileDate {
