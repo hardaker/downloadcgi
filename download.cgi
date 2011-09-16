@@ -188,14 +188,22 @@ sub print_results {
 
 			if ($count == 0) {
 			    print $prefix;
-			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "$file$suffix");
+			    $result .=
+				"<span class=\"dcgiLinks\"><span class=\"dcgiFirstLink\">" .
+				sprintf($linkformat, $newfiles{$file}{$suffix},
+					"$file$suffix") .
+					"</span>";
 			} else {
-			    $result .= "&nbsp;&nbsp;|&nbsp;&nbsp;" if ($count == 1);
-			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "[$suffix]");
+			    $result .= "&nbsp;&nbsp; | &nbsp;&nbsp;<span class=\"dcgiOtherLinks\">" if ($count == 1);
+			    $result .= " " . sprintf($linkformat, $newfiles{$file}{$suffix}, "($suffix)");
 			}
 			$count++;
 		    }
 		    next if ($count == 0);
+
+		    $result .= "</span>" if ($count => 1); # /dcgiOtherLinks
+
+		    $result .= "</span>"; # /dcgiLinks
 
 		    if ($showdates) {
 			$result .= 
