@@ -509,7 +509,7 @@ sub print_button_bar {
 	$startText = "<tr>";
     }
 
-    print "$startText<td class=\"dcgiButtonBarSection\"><a class=\"hideshow\" href=\"#\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
+    print "$startText<td class=\"dcgiButtonBarSection\"><span class=\"dcgiHideShowButton\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
 
     print "</table>\n";
 
