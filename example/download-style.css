@@ -107,6 +107,31 @@ h2, h3 {
     font-style: italic;
 }
 
+.dcgiLinks {
+    width: 100%;
+}
+
+.dcgiFirstLink {
+    width: 40em;
+    margin-bottom: 4px;
+}
+
+.dcgiOtherLinks {
+    font-style: italic;
+    font-size: .9em;
+}
+
+.dcgiOtherLink {
+    border-color: aaf;
+    border-width: 0px;
+    border-style: solid;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 1px;
+    margin-right: 3px;
+    padding: 2px;
+}
+
 A:link.hideshow    { text-decoration: none; 	   color: #000; }
 A:visited.hideshow { text-decoration: none; 	   color: #000; }
 A:active.active    { text-decoration: none; 	   color: #eef; }
