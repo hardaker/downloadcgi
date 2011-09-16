@@ -864,11 +864,11 @@ pick it up as an index) and then point your web browser at it.
 
 The following features would be 'nice to haves:' 
 
-- sort by various other methods
-- URL prefix other than current
-- generic list formatting mechanism 
-- hover notes
-- caching of data for speed (based on directory modification time)
+ - sort by various other methods
+ - URL prefix other than current
+ - generic list formatting mechanism 
+ - hover notes
+ - caching of data for speed (based on directory modification time)
 
 =head1 AUTHOR
 
