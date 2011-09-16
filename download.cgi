@@ -230,7 +230,7 @@ sub print_results {
 		print "</div>\n";
 		if (defined($name) && $name ne '') {
 		    print "<span class=\"dcgiMoreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">older...</span>\n";
-		    print "<span class=\"dcgiHideButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionHideButton\">hide...</span>\n";
+		    print "<span class=\"dcgiHideButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionHideButton\">hide older...</span>\n";
 		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
