@@ -229,7 +229,8 @@ sub print_results {
 		my $name = $nameList[$#nameList];
 		print "</div>\n";
 		if (defined($name) && $name ne '') {
-		    print "<span class=\"dcgiMoreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">more...</span>\n";
+		    print "<span class=\"dcgiMoreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">older...</span>\n";
+		    print "<span class=\"dcgiHideButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionHideButton\">hide...</span>\n";
 		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
@@ -530,10 +531,12 @@ sub print_button_bar {
     print '<script>',"\n";
 
     print 'function toggleIt(name, opposite, same) {
-               if ( $("." + name).is(":visible") ) {
+               if ( $("." + name).is(":visible") || 
+                    $("#" + name).is(":visible")) {
                  $("." + name).hide(200);
                  $("#" + name).hide(200);
                  $("#" + name + "MoreButton").show(200);
+                 $("#" + name + "HideButton").hide(200);
                  $("#" + name + "Button").css("background-color","#fff");
                  if (opposite) {
                    $("." + opposite).show(200);
@@ -545,6 +548,7 @@ sub print_button_bar {
                  $("." + name).show(200);
                  $("#" + name).show(200);
                  $("#" + name + "MoreButton").hide(200);
+                 $("#" + name + "HideButton").show(200);
                  $("#" + name + "Button").css("background-color","#ccf");
                  if (same) {
                    $("." + same).show(200);
@@ -568,6 +572,7 @@ sub print_button_bar {
     }
 
     print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\", \"moreButton\"); });\n";
+    print "\$(\".dcgiHideButton\").hide();\n";
     print "toggleIt(\"olderVersions\");";
 
     print "});</script>\n";
