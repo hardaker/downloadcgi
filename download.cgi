@@ -528,6 +528,10 @@ sub print_button_bar {
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
+    print "<noscript>","\n";
+    print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
+    print "</noscript>","\n";
+
     print '<script>',"\n";
 
     print 'function toggleIt(name, opposite, same) {
