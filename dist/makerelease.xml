@@ -1,0 +1,61 @@
+<!-- this is a makerelease script: http://github.com/hardaker/makerelease -->
+<makerelease>
+  <steps>
+    <step type="prompt" name="startup:versionnumber" title="Enter the version number"
+    	  mandatory="1"
+    	  parameter="VERSION"
+    	  prompt="Enter a version number:">
+      <text>
+    	This version number will be used in multiple places as we progress
+      </text>
+    </step>
+    <step type="Informational"	name="startup:info" title="Startup Info"
+	  pause="0" mandatory="0">
+      <text>
+	We'll use this as the version number: {VERSION}
+      </text>
+    </step>
+
+    <step type="command" name="package:zip" title="tag it in git"
+	  pause="0" mandatory="0">
+      <text>
+	Tag the version in git
+      </text>
+      <commands>
+	<command>git tag {VERSION}</command>
+	
+	<!-- <comand>...</command> ; use mr-command1 -->
+      </commands>
+    </step>
+
+
+    <step type="command" name="copy the files" title="Copying files into place"
+	  pause="0" mandatory="0">
+      <text>
+	Creates the directory and puts the files in place
+      </text>
+      <commands>
+	<command>mkdir download.cgi-{VERSION}</command>
+	<command>cp -pr README example download.cgi download.cgi-{VERSION}</command>
+	<command>pod2man download.cgi &gt; download.cgi-{VERSION}/download.cgi.5</command>
+	<command>pod2html download.cgi &gt; download.cgi-{VERSION}/download.html</command>
+	<!-- <comand>...</command> ; use mr-command1 -->
+      </commands>
+
+    </step>
+    
+    <step type="command" name="package:tar" title="Tar it up"
+	  pause="0" mandatory="0">
+      <text>
+	Creating the .tar.gz and .zip file
+      </text>
+      <commands>
+	<command>tar czf download.cgi-{VERSION}.tar.gz download.cgi-{VERSION}</command>
+	<command>zip -r download.cgi-{VERSION}.zip download.cgi-{VERSION}</command>
+	<!-- <comand>...</command> ; use mr-command1 -->
+      </commands>
+    </step>
+
+
+  </steps>
+</makerelease>
