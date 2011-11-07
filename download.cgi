@@ -380,10 +380,30 @@ sub sort_by_date {
 
 sub match_rule {
     my ($file) = @_;
+
     foreach my $rule (@rules) {
-	if ($rule->{'type'} eq 'list' && $file =~ /$rule->{'expression'}/) {
-	    push @{$rule->{'files'}}, $file;
-	    return;
+
+	if ($rule->{'type'} eq 'list') {
+
+	    # eval the rule's expression first to make sure it is a valid regexp
+	    # (and cache the expensive results)
+	    if (!exists($rule->{'regexpok'})) {
+		eval('"" =~ /' . $rule->{'expression'} . '/');
+		if ($@ ne '') {
+		    print STDERR "RULE Expression error: $rule->{'expression'} is an invalid regexp\n";
+		    $rule->{'regexpok'} = 0;
+		    return;
+		} else {
+		    $rule->{'regexpok'} = 1;
+		}
+	    } elsif (! $rule->{'regexpok'}) {
+		return;
+	    }
+
+	    if ($file =~ /$rule->{'expression'}/) {
+		push @{$rule->{'files'}}, $file;
+		return;
+	    }
 	}
     }
     print STDERR "Download ERROR: unmatched file in download directory: $file\n";
