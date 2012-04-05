@@ -40,7 +40,7 @@ load_rules();
 #
 # open the download directory 
 #
-load_files();
+load_files($downloaddir, "", 1);
 
 #
 # print the results as the final list we've collected
@@ -186,12 +186,16 @@ sub print_results {
 			next if ($donefile{"$file$suffix"});
 			$donefile{"$file$suffix"} = 1;
 
+			# kill everything up to the first /
+			my $nodirfile = "$file$suffix";
+			$nodirfile =~ s/.*\///;
+
 			if ($count == 0) {
 			    print $prefix;
 			    $result .=
 				"<span class=\"dcgiLinks\"><div class=\"dcgiFirstLink\">" .
 				sprintf($linkformat, $newfiles{$file}{$suffix},
-					"$file$suffix");
+					$nodirfile);
 
 			    if ($showdates || 0) {
 				$result .= 
@@ -379,14 +383,14 @@ sub sort_by_date {
 }
 
 sub match_rule {
-    my ($file) = @_;
+    my ($file, $subdir) = @_;
 
     foreach my $rule (@rules) {
 
 	if ($rule->{'type'} eq 'list') {
 
 	    # eval the rule's expression first to make sure it is a valid regexp
-	    # (and cache the expensive results)
+	    # (and cache the expensive regexp testing results)
 	    if (!exists($rule->{'regexpok'})) {
 		eval('"" =~ /' . $rule->{'expression'} . '/');
 		if ($@ ne '') {
@@ -400,8 +404,10 @@ sub match_rule {
 		return;
 	    }
 
-	    if ($file =~ /$rule->{'expression'}/) {
-		push @{$rule->{'files'}}, $file;
+	    my $topush = "$subdir/$file";
+	    $topush =~ s/^\///;
+	    if ($topush =~ /$rule->{'expression'}/) {
+		push @{$rule->{'files'}}, $topush;
 		return;
 	    }
 	}
@@ -476,11 +482,12 @@ sub load_rules {
 }
 
 sub load_files {
+    my ($masterdirectory, $subdirectory, $recursive) = @_;
     #
     # load the files from the master directory into the rules
     #
 
-    my $dirh = IO::Dir->new($downloaddir);
+    my $dirh = IO::Dir->new("$masterdirectory/$subdirectory");
     if (!defined($dirh)) {
 	Error("Error in Generating a Download Listing");
     }
@@ -493,10 +500,21 @@ sub load_files {
     while (defined($dir = $dirh->read)) {
 	next if ($dir =~ /^\./);
 	next if ($dir eq $rulesfilename);
+	next if ($dir =~ /\//); # skip / containing files (bad bad)
+
+	# treat directories specially: decend only if recursive is turned on
+	if (-d "$masterdirectory/$subdirectory/$dir") {
+	    if ($recursive) {
+		# decend into the subdirectory collecting more files
+		load_files($masterdirectory, "$subdirectory/$dir",
+			   $recursive);
+	    }
+	    next;
+	}
 
 	my $subversion = "&nbsp;";
 
-	match_rule($dir);
+	match_rule($dir, $subdirectory);
 
 	my ($name, $ver, $type) = ($dir =~ /([^\d]+)-([-\.\drcpre]+)\.(.*)/);
 	if ($ver =~ s/-([\d\.]+)//) {
@@ -504,7 +522,8 @@ sub load_files {
 	}
 
 	if ($type) {
-	    $stuff{$ver}{$subversion}{$name}{$type} = [$dir,$subversion];
+	    $stuff{$ver}{$subversion}{$name}{$type} =
+		[$dir,$subversion,$masterdirectory];
 	}
     }
 }
