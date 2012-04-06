@@ -530,6 +530,7 @@ sub load_files {
     }
 }
 
+my $have_printed_toggle_it = 0;
 sub print_button_bar {
     my ($rule) = @_;
     print "<div class=\"dcgiButtonBarContainer\">\n";
@@ -569,13 +570,16 @@ sub print_button_bar {
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
-    print "<noscript>","\n";
-    print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
-    print "</noscript>","\n";
+    if (!$have_printed_toggle_it) {
+	$have_printed_toggle_it = 1;
 
-    print '<script>',"\n";
+	print "<noscript>","\n";
+	print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
+	print "</noscript>","\n";
 
-    print 'function toggleIt(name, opposite, same) {
+	print '<script>',"\n";
+
+	print 'function toggleIt(name, opposite, same) {
                if ( $("." + name).is(":visible") || 
                     $("#" + name).is(":visible")) {
                  $("." + name).hide(200);
@@ -600,6 +604,9 @@ sub print_button_bar {
                  }
                }
            }', "\n";
+    } else {
+	print "<script>\n";
+    }
 
     print '$(document).ready(function() {',"\n";
 
@@ -608,7 +615,7 @@ sub print_button_bar {
 	$doneName{$name->{'expression'}} = 2;
 
 	my $strippedName = simplify_name($name->{'expression'});
-        print "\$(\"\#${strippedName}Button\").click(function() { toggleIt(\"${strippedName}\"); });\n";
+	print "\$(\"\#${strippedName}Button\").click(function() { toggleIt(\"${strippedName}\"); });\n";
 	if ($name->{'hide'} ||
 	    ($name->{'hideunless'} &&
 	     $ENV{'HTTP_USER_AGENT'} !~ /$name->{'hideunless'}/)) {
@@ -620,8 +627,9 @@ sub print_button_bar {
     print "\$(\".dcgiHideButton\").hide();\n";
     print "toggleIt(\"olderVersions\");";
 
-    print "});</script>\n";
+    print "});\n";
 
+    print "</script>\n";
     print "</div>\n";
 }
 
