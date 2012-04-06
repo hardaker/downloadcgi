@@ -932,6 +932,11 @@ buttons at a deth greater than N will be printed.  This is useful when
 you have a big hierarchy and the buttons get too messy with all of
 them showing up showing.
 
+=item label LABEL
+
+Sets the label printed to the left of the buttonbar.  This defaults to
+"Show Files:" if not set.  To erase the label, set it to &nbsp;.
+
 =back
 
 =item ignore REGEXP
