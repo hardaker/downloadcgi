@@ -580,6 +580,7 @@ sub print_button_bar {
     $have_printed_toggle_it++;
     my $ButtonName = "Button" . $have_printed_toggle_it;
 
+    print "<div class=\"dcgiButtonBarOuterContainer\">\n";
     print "<div class=\"dcgiButtonBarContainer\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
@@ -589,7 +590,8 @@ sub print_button_bar {
     my %levelButtons;
     my %doneName;
 
-    print "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">Show Files:</td>\n";
+    my $showFilesName = get_param($rule, 'label', "Show Files: ");
+    print "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">$showFilesName</td>\n";
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}});
 	$doneName{$name->{'expression'}} = 1;
@@ -649,7 +651,7 @@ sub print_button_bar {
     print "});\n";
 
     print "</script>\n";
-    print "</div>\n";
+    print "</div></div>\n";
 }
 
 sub simplify_name {
