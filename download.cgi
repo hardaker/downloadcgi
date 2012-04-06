@@ -25,7 +25,7 @@ foreach my $i (1..9) {
 	];
 }
 
-my %globalvars;
+our %globalvars;
 
 #
 # print http headers
@@ -40,7 +40,7 @@ load_rules();
 #
 # open the download directory 
 #
-load_files($downloaddir, "", 1);
+load_files($downloaddir, "");
 
 #
 # print the results as the final list we've collected
@@ -455,7 +455,7 @@ sub load_rules {
     }
     $fileh->close();
 
-    # post-process the rules to handle alias expansion
+    # post-process the rules to handle alias expansion and parsing globals
     my @newrules;
     foreach my $rule (@rules) {
 	if (exists($aliases{$rule->{'type'}})) {
@@ -474,6 +474,9 @@ sub load_rules {
 				       \@newrules);
 		}
 	    }
+	} elsif ($rule->{'type'} eq 'global' &&
+		 $rule->{'expression'} =~ /^\s*recursive\s+1\s*$/) {
+	    $globalvars{'recursive'} = 1;
 	} else {
 	    push @newrules, $rule;
 	}
@@ -482,7 +485,7 @@ sub load_rules {
 }
 
 sub load_files {
-    my ($masterdirectory, $subdirectory, $recursive) = @_;
+    my ($masterdirectory, $subdirectory) = @_;
     #
     # load the files from the master directory into the rules
     #
@@ -504,10 +507,9 @@ sub load_files {
 
 	# treat directories specially: decend only if recursive is turned on
 	if (-d "$masterdirectory/$subdirectory/$dir") {
-	    if ($recursive) {
+	    if ($globalvars{'recursive'}) {
 		# decend into the subdirectory collecting more files
-		load_files($masterdirectory, "$subdirectory/$dir",
-			   $recursive);
+		load_files($masterdirectory, "$subdirectory/$dir");
 	    }
 	    next;
 	}
@@ -825,6 +827,14 @@ I<buttonbar> token.
 Sub-options for this include:
 
 =over
+
+=item recursive 1
+
+If set to 1, sub-directories will be decended into and all matching
+files in the entire directory tree will be looked for.  I<list> and
+other regexps will match the whole subdirectory-to-file path (but make
+sure you include proprly escaped slashes, like \/, when creating
+regular expressions with path components in them).
 
 =item level N
 
