@@ -533,6 +533,50 @@ sub load_files {
 my $have_printed_toggle_it = 0;
 sub print_button_bar {
     my ($rule) = @_;
+
+    if (!$have_printed_toggle_it) {
+	print "<noscript>","\n";
+	print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
+	print "</noscript>","\n";
+
+	print '<script>',"\n";
+
+	print 'function toggleIt(name, opposite, same) {
+               if ( $("." + name).is(":visible") || 
+                    $("#" + name).is(":visible")) {
+                 $("." + name).hide(200);
+                 $("#" + name).hide(200);
+                 $("#" + name + "MoreButton").show(200);
+                 $("#" + name + "HideButton").hide(200);
+                 for(var i = 0; i < 10 ; i ++) {
+                   $("#" + name + "Button" + i).css("background-color","#fff");
+                 }
+                 if (opposite) {
+                   $("." + opposite).show(200);
+                 }
+                 if (same) {
+                   $("." + same).hide(200);
+                 }
+               } else {
+                 $("." + name).show(200);
+                 $("#" + name).show(200);
+                 $("#" + name + "MoreButton").hide(200);
+                 $("#" + name + "HideButton").show(200);
+                 for(var i = 0; i < 10 ; i ++) {
+                   $("#" + name + "Button" + i).css("background-color","#ccf");
+                 }
+                 if (same) {
+                   $("." + same).show(200);
+                 }
+               }
+           }', "\n";
+
+	print "</script>\n";
+    }
+
+    $have_printed_toggle_it++;
+    my $ButtonName = "Button" . $have_printed_toggle_it;
+
     print "<div class=\"dcgiButtonBarContainer\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
@@ -549,7 +593,7 @@ sub print_button_bar {
 
 	my $strippedName = simplify_name($name->{'expression'});
 	$levelButtons[get_param($name, 'level', 1)] .=
-	    "  <span class=\"dcgiHideShowButton\" id=\"${strippedName}Button\">$name->{expression}</span>\n";
+	    "  <span class=\"dcgiHideShowButton\" id=\"${strippedName}$ButtonName\">$name->{expression}</span>\n";
     }
 
     my $startText = "";
@@ -570,43 +614,7 @@ sub print_button_bar {
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
-    if (!$have_printed_toggle_it) {
-	$have_printed_toggle_it = 1;
-
-	print "<noscript>","\n";
-	print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
-	print "</noscript>","\n";
-
-	print '<script>',"\n";
-
-	print 'function toggleIt(name, opposite, same) {
-               if ( $("." + name).is(":visible") || 
-                    $("#" + name).is(":visible")) {
-                 $("." + name).hide(200);
-                 $("#" + name).hide(200);
-                 $("#" + name + "MoreButton").show(200);
-                 $("#" + name + "HideButton").hide(200);
-                 $("#" + name + "Button").css("background-color","#fff");
-                 if (opposite) {
-                   $("." + opposite).show(200);
-                 }
-                 if (same) {
-                   $("." + same).hide(200);
-                 }
-               } else {
-                 $("." + name).show(200);
-                 $("#" + name).show(200);
-                 $("#" + name + "MoreButton").hide(200);
-                 $("#" + name + "HideButton").show(200);
-                 $("#" + name + "Button").css("background-color","#ccf");
-                 if (same) {
-                   $("." + same).show(200);
-                 }
-               }
-           }', "\n";
-    } else {
-	print "<script>\n";
-    }
+    print "<script>\n";
 
     print '$(document).ready(function() {',"\n";
 
@@ -615,11 +623,11 @@ sub print_button_bar {
 	$doneName{$name->{'expression'}} = 2;
 
 	my $strippedName = simplify_name($name->{'expression'});
-	print "\$(\"\#${strippedName}Button\").click(function() { toggleIt(\"${strippedName}\"); });\n";
+	print "\$(\"\#${strippedName}$ButtonName\").click(function() { toggleIt(\"${strippedName}\"); });\n";
 	if ($name->{'hide'} ||
 	    ($name->{'hideunless'} &&
 	     $ENV{'HTTP_USER_AGENT'} !~ /$name->{'hideunless'}/)) {
-	    print "\$(\"#${strippedName}Button\").click();";
+	    print "\$(\"#${strippedName}$ButtonName\").click();";
 	}
     }
 
