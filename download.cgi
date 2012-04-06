@@ -609,6 +609,7 @@ sub print_button_bar {
 	my $label = "";
 	my $levelset = $levelButtons{$levelname};
 	next if ($levelset eq '');
+	next if ($levelname eq 'no');
 	if ($levelname =~ /^\d+$/) {
 	    next if (++$levelcount > $maxlevel);
 	} else {
@@ -883,6 +884,9 @@ buttons and will be printed in alphabetical order.
 If the NAME is prepended with numerical digits, the group will be
 sorted and printed within the normal level sets but the number will be
 stripped before displaying the name.
+
+The special buttongroup name of 'no' will hide cause the button for
+that box not to be printed at all.
 
 =item hide 1
 
