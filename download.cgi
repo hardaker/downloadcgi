@@ -592,17 +592,24 @@ sub print_button_bar {
 	$doneName{$name->{'expression'}} = 1;
 
 	my $strippedName = simplify_name($name->{'expression'});
-	$levelButtons[get_param($name, 'level', 1)] .=
+	$levelButtons{get_param($name, 'buttongroup',
+				get_param($name, 'level', 1))} .=
 	    "  <span class=\"dcgiHideShowButton\" id=\"${strippedName}$ButtonName\">$name->{expression}</span>\n";
     }
 
     my $startText = "";
     my $levelcount = 0;
     my $maxlevel = get_param($rule, 'maxlevel', 100);
-    foreach my $levelset (@levelButtons) {
+    foreach my $levelname (sort keys %levelButtons) {
+	my $label = "";
+	my $levelset = $levelButtons{$levelname};
 	next if ($levelset eq '');
-	last if (++$levelcount > $maxlevel);
-	print "$startText<td class=\"dcgiButtonBarSection\">$levelset</td><tr />\n";
+	if ($levelname =~ /^\d+$/) {
+	    next if (++$levelcount > $maxlevel);
+	} else {
+	    $label = $levelname . ": ";
+	}
+	print "$startText<td class=\"dcgiButtonBarSection\">$label$levelset</td><tr />\n";
 	$startText = "<tr>";
     }
 
