@@ -534,6 +534,9 @@ my $have_printed_toggle_it = 0;
 sub print_button_bar {
     my ($rule) = @_;
 
+    #
+    # print the needed javascript component inline for the first call
+    #
     if (!$have_printed_toggle_it) {
 	print "<noscript>","\n";
 	print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
@@ -583,7 +586,7 @@ sub print_button_bar {
 	return;
     }
 
-    my @levelButtons;
+    my %levelButtons;
     my %doneName;
 
     print "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">Show Files:</td>\n";
@@ -608,6 +611,7 @@ sub print_button_bar {
 	    next if (++$levelcount > $maxlevel);
 	} else {
 	    $label = $levelname . ": ";
+	    $label =~ s/^\d*-*//;
 	}
 	print "$startText<td class=\"dcgiButtonBarSection\">$label$levelset</td><tr />\n";
 	$startText = "<tr>";
@@ -866,6 +870,17 @@ of dcgiLevelN attached to it.  This is useful for creating hierarchical sets
 of CSS-designable sections.  Deeper levels of N will nested within
 higher ones.  Additionally the buttonbar entries will be grouped into
 E<LT>spanE<GT> sections as well so they can be structured using CSS.
+
+=item buttongroup NAME
+
+If a I<buttongroup> specification exists, all the various buttons for
+the button bar will be grouped under a separate NAME section (after
+the level sections).  The NAME will be printed before the row of
+buttons and will be printed in alphabetical order.
+
+If the NAME is prepended with numerical digits, the group will be
+sorted and printed within the normal level sets but the number will be
+stripped before displaying the name.
 
 =item hide 1
 
