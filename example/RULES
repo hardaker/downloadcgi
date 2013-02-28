@@ -12,6 +12,8 @@ h1 Download Something!
 # remember that 'list' uses regexps, not globs (IE, not *.txt)!
 h2 Text Files
 list .*.txt
+  versionheaders 1
+  suffixes .txt .txt.asc
 
 h2 OS Files
 

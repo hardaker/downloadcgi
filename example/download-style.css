@@ -114,6 +114,10 @@ h2, h3 {
   color: #a22;
 }
 
+.dcgiMoreButtonAfterSuffixes {
+    margin-top: -2.5em;
+}
+
 .dcgiHideButton {
   float: right;
   clear: right;

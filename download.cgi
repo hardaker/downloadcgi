@@ -148,9 +148,11 @@ sub print_results {
 
 	    # XXX: allow other rule-defined prefix/postfixes
 	    print "<ul>\n";
+	    my $suffixcount = 0;
 	    foreach my $file (@files) {
 		my $prefix = "";
 		my $version = find_version($file);
+		my $count = 0;
 
 		if (defined($lastversion) && $lastversion ne $version) {
 		    if (get_param($rule, 'versionspaces')) {
@@ -176,7 +178,6 @@ sub print_results {
 		if ($suffixes && exists($newfiles{$file})) {
 		    my $result = "<li>";
 		    my $linkformat = "<a href=\"%s\">%s</a>";
-		    my $count = 0;
 		    my $firstsuffix;
 		    my $allowmultiple = get_param($rule, 'allowmultiple');
 		    foreach my $suffix (sort keys(%{$newfiles{$file}})) {
@@ -210,6 +211,7 @@ sub print_results {
 			} else {
 			    $result .= "<span class=\"dcgiOtherLinks\">" if ($count == 1);
 			    $result .= " <span class=\"dcgiOtherLink\">" . sprintf($linkformat, $newfiles{$file}{$suffix}, "($suffix)") . "</span>";
+			    $suffixcount++;
 			}
 			$count++;
 		    }
@@ -235,9 +237,11 @@ sub print_results {
 	    if (! $firstItem) {
 		my $name = $nameList[$#nameList];
 		print "</div>\n";
+		my $suffixclass =
+		    $suffixcount > 0 ? " dcgiMoreButtonAfterSuffixes" : "";
 		if (defined($name) && $name ne '') {
-		    print "<span class=\"dcgiMoreButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">older...</span>\n";
-		    print "<span class=\"dcgiHideButton\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionHideButton\">hide older...</span>\n";
+		    print "<span class=\"dcgiMoreButton$suffixclass\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionMoreButton\">older...</span>\n";
+		    print "<span class=\"dcgiHideButton$suffixclass\" onClick=\'toggleIt(\"${name}OlderVersion\")' id=\"${name}OlderVersionHideButton\">hide older...</span>\n";
 		}
 	    }
 	    if (defined($lastversion) && get_param($rule, 'versionheaders')) {
