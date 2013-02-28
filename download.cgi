@@ -589,6 +589,9 @@ sub print_button_bar {
 
     print "<div class=\"dcgiButtonBarOuterContainer\">\n";
     print "<div class=\"dcgiButtonBarContainer\">\n";
+    print "<span id=\"toggleButtonBarHide\">&gt</span>\n";
+    print "<span id=\"toggleButtonBarShow\">&lt</span>\n";
+    print "<div class=\"dcgiButtonBarContainerHideable\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
 	return;
@@ -638,6 +641,9 @@ sub print_button_bar {
     print "<script>\n";
 
     print '$(document).ready(function() {',"\n";
+    print "\$(\"\#toggleButtonBarHide\").click(function() { toggleIt(\"dcgiButtonBarContainerHideable\"); toggleIt(\"toggleButtonBarHide\"); toggleIt(\"toggleButtonBarShow\"); });\n";
+    print "\$(\"\#toggleButtonBarShow\").click(function() { toggleIt(\"dcgiButtonBarContainerHideable\"); toggleIt(\"toggleButtonBarHide\"); toggleIt(\"toggleButtonBarShow\"); });\n";
+    print "toggleIt(\"toggleButtonBarShow\");\n";
 
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}} == 2);
@@ -659,7 +665,7 @@ sub print_button_bar {
     print "});\n";
 
     print "</script>\n";
-    print "</div></div>\n";
+    print "</div></div></div>\n";
 }
 
 sub simplify_name {
