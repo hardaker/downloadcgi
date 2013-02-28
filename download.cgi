@@ -178,13 +178,16 @@ sub print_results {
 		    my $linkformat = "<a href=\"%s\">%s</a>";
 		    my $count = 0;
 		    my $firstsuffix;
+		    my $allowmultiple = get_param($rule, 'allowmultiple');
 		    foreach my $suffix (sort keys(%{$newfiles{$file}})) {
 			$suffix = "" if ($suffix eq '__left');
 			$firstsuffix = $suffix if (!defined($firstsuffix));
 
 			# catch duplicates from bad suffix configs
-			next if ($donefile{"$file$suffix"});
-			$donefile{"$file$suffix"} = 1;
+			if (!$allowmultiple) {
+			    next if ($donefile{"$file$suffix"});
+			    $donefile{"$file$suffix"} = 1;
+			}
 
 			# kill everything up to the first /
 			my $nodirfile = "$file$suffix";
@@ -837,6 +840,16 @@ excluded)
 This will add the date for the last modification time of the file.  If
 this is desired for all lists, use the 'global' property to set this
 globally.
+
+=item allowmultiple 1
+
+This means that a given file may be listed more than once in the
+results output.  Normally once a file is matched, it will be marked as
+"done" and not shown again even if another rule matches the same file.
+This option, when set on a match, means it won't mark it so future
+rules will still be able to match it.  Also, if set on a later rule
+even after a previous rule marked it as done, it'll ignore the 'done'
+mark and show it anyway.
 
 =back
 
