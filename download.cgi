@@ -606,8 +606,10 @@ sub print_button_bar {
 
     print "<div class=\"dcgiButtonBarOuterContainer\">\n";
     $buttonHTML .=  "<div class=\"dcgiButtonBarContainer\">\n";
-    $buttonHTML .=  "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"hidebutton.svg\" height=\"200px\"/></span>\n";
-    $buttonHTML .=  "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"showbutton.svg\" height=\"200px\"/></span>\n";
+    my $hidebutton = get_param($rule, 'hidebutton', 'hidebutton.svg');
+    my $showbutton = get_param($rule, 'showbutton', 'showbutton.svg');
+    $buttonHTML .=  "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"$hidebutton\" height=\"200px\"/></span>\n";
+    $buttonHTML .=  "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"$showbutton\" height=\"200px\"/></span>\n";
     $buttonHTML .=  "<span class=\"dcgiButtonBarContainerHideable\">\n";
     if ($#names == -1) {
 	$buttonHTML .=  "ack, no buttons</div>\n";
@@ -987,6 +989,14 @@ them showing up showing.
 
 Sets the label printed to the left of the buttonbar.  This defaults to
 "Show Files:" if not set.  To erase the label, set it to &nbsp;.
+
+=item hidebutton URLSPEC
+
+=item showbutton URLSPEC
+
+These change the hide/show image src parameters of the button box to
+the URL spec.  They default to 'hidebutton.svg' and 'showbutton.svg'.
+Examples of these can be found in the I<examples> directory.
 
 =back
 
