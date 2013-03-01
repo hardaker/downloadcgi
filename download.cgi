@@ -579,7 +579,23 @@ sub print_button_bar {
                    $("." + same).show(200);
                  }
                }
-           }', "\n";
+           };', "\n";
+
+	print 'var doitslider = true;
+           function toggleButtonBars() {
+               //if ( $("#toggleButtonBarHide").is(":visible") ) {
+               if (doitslider) {
+                   $("#toggleButtonBarHide").hide(200);
+                   $("#toggleButtonBarShow").show(200);
+                   $(".dcgiButtonBarContainerHideable").hide(200);
+                   doitslider = false;
+               } else {
+                   $("#toggleButtonBarHide").show(200);
+                   $("#toggleButtonBarShow").hide(200);
+                   $(".dcgiButtonBarContainerHideable").show(200);
+                   doitslider = true;
+               }
+        };', "\n";
 
 	print "</script>\n";
     }
@@ -589,9 +605,9 @@ sub print_button_bar {
 
     print "<div class=\"dcgiButtonBarOuterContainer\">\n";
     print "<div class=\"dcgiButtonBarContainer\">\n";
-    print "<span id=\"toggleButtonBarHide\">&gt</span>\n";
-    print "<span id=\"toggleButtonBarShow\">&lt</span>\n";
-    print "<div class=\"dcgiButtonBarContainerHideable\">\n";
+    print "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"hidebutton.svg\" height=\"200px\"/></span>\n";
+    print "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"showbutton.svg\" height=\"200px\"/></span>\n";
+    print "<span class=\"dcgiButtonBarContainerHideable\">\n";
     if ($#names == -1) {
 	print "ack, no buttons</div>\n";
 	return;
@@ -638,12 +654,13 @@ sub print_button_bar {
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
+    print "</span></div></div>\n";
+
     print "<script>\n";
 
     print '$(document).ready(function() {',"\n";
-    print "\$(\"\#toggleButtonBarHide\").click(function() { toggleIt(\"dcgiButtonBarContainerHideable\"); toggleIt(\"toggleButtonBarHide\"); toggleIt(\"toggleButtonBarShow\"); });\n";
-    print "\$(\"\#toggleButtonBarShow\").click(function() { toggleIt(\"dcgiButtonBarContainerHideable\"); toggleIt(\"toggleButtonBarHide\"); toggleIt(\"toggleButtonBarShow\"); });\n";
-    print "toggleIt(\"toggleButtonBarShow\");\n";
+    print "\$(\"\#toggleButtonBarHide\").click(function() { toggleButtonBars(); });\n";
+    print "\$(\"\#toggleButtonBarShow\").click(function() { toggleButtonBars(); });\n";
 
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}} == 2);
@@ -660,12 +677,16 @@ sub print_button_bar {
 
     print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\", \"moreButton\"); });\n";
     print "\$(\".dcgiHideButton\").hide();\n";
+    #print "toggleIt(\"toggleButtonBarShow\");\n";
+    print '$("#toggleButtonBarShow").hide(0);', "\n";
+    print "toggleButtonBars();\n";
+    print "toggleButtonBars();\n";
     print "toggleIt(\"olderVersions\");";
 
     print "});\n";
 
     print "</script>\n";
-    print "</div></div></div>\n";
+
 }
 
 sub simplify_name {
