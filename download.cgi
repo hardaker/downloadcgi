@@ -602,14 +602,16 @@ sub print_button_bar {
 
     $have_printed_toggle_it++;
     my $ButtonName = "Button" . $have_printed_toggle_it;
+    my $buttonHTML = "";
 
     print "<div class=\"dcgiButtonBarOuterContainer\">\n";
-    print "<div class=\"dcgiButtonBarContainer\">\n";
-    print "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"hidebutton.svg\" height=\"200px\"/></span>\n";
-    print "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"showbutton.svg\" height=\"200px\"/></span>\n";
-    print "<span class=\"dcgiButtonBarContainerHideable\">\n";
+    $buttonHTML .=  "<div class=\"dcgiButtonBarContainer\">\n";
+    $buttonHTML .=  "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"hidebutton.svg\" height=\"200px\"/></span>\n";
+    $buttonHTML .=  "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"showbutton.svg\" height=\"200px\"/></span>\n";
+    $buttonHTML .=  "<span class=\"dcgiButtonBarContainerHideable\">\n";
     if ($#names == -1) {
-	print "ack, no buttons</div>\n";
+	$buttonHTML .=  "ack, no buttons</div>\n";
+	print $buttonHTML;
 	return;
     }
 
@@ -617,7 +619,7 @@ sub print_button_bar {
     my %doneName;
 
     my $showFilesName = get_param($rule, 'label', "Show Files: ");
-    print "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">$showFilesName</td>\n";
+    $buttonHTML .=  "<table border=0 class=\"dcgiHideShowButtons\"><tr><td class=\"dcgiButtonBarTitle\" rowspan=\"100\">$showFilesName</td>\n";
     foreach my $name (@names) {
 	next if ($doneName{$name->{'expression'}});
 	$doneName{$name->{'expression'}} = 1;
@@ -642,21 +644,26 @@ sub print_button_bar {
 	    $label = $levelname . ": ";
 	    $label =~ s/^\d*-*//;
 	}
-	print "$startText<td class=\"dcgiButtonBarSection\">$label$levelset</td><tr />\n";
+	$buttonHTML .=  "$startText<td class=\"dcgiButtonBarSection\">$label$levelset</td><tr />\n";
 	$startText = "<tr>";
     }
 
-    print "$startText<td class=\"dcgiButtonBarSection\"><span class=\"dcgiHideShowButton\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
+    $buttonHTML .=  "$startText<td class=\"dcgiButtonBarSection\"><span class=\"dcgiHideShowButton\" id=\"olderVersionsButton\">Older Versions</a></td></tr>\n";
 
-    print "</table>\n";
+    $buttonHTML .=  "</table>\n";
 
     # my $strippedName = simplify_name($name->{'expression'});
     # $levelButtons[get_param($name, 'level', 1)] .=
     # 	"  <a class=\"hideshow\" href=\"#\" id=\"${strippedName}Button\">$name->{expression}</a>\n";
 
-    print "</span></div></div>\n";
+    $buttonHTML .=  "</span></div>\n";
+    print "</div>\n";
 
     print "<script>\n";
+
+    $buttonHTML =~ s/"/\\"/g;
+    $buttonHTML =~ s/\n//g;
+    print "\$(\".dcgiButtonBarOuterContainer\").html(\"$buttonHTML\");";
 
     print '$(document).ready(function() {',"\n";
     print "\$(\"\#toggleButtonBarHide\").click(function() { toggleButtonBars(); });\n";
