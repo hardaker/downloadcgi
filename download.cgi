@@ -665,9 +665,8 @@ sub print_button_bar {
 
     print "<script>\n";
 
-    $buttonHTML =~ s/"/\\"/g;
     $buttonHTML =~ s/\n//g;
-    print "\$(\".dcgiButtonBarOuterContainer\").html(\"$buttonHTML\");";
+    print "\$(\".dcgiButtonBarOuterContainer\").html('$buttonHTML');";
 
     print '$(document).ready(function() {',"\n";
     print "\$(\"\#toggleButtonBarHide\").click(function() { toggleButtonBars(); });\n";
