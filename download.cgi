@@ -584,18 +584,9 @@ sub print_button_bar {
 	print 'var doitslider = true;
                var scrolledonce = false;
            function toggleButtonBars() {
-               //if ( $("#toggleButtonBarHide").is(":visible") ) {
-               if (doitslider) {
-                   $("#toggleButtonBarHide").hide(200);
-                   $("#toggleButtonBarShow").show(200);
-                   $(".dcgiButtonBarContainerHideable").hide(200);
-                   doitslider = false;
-               } else {
-                   $("#toggleButtonBarHide").show(200);
-                   $("#toggleButtonBarShow").hide(200);
-                   $(".dcgiButtonBarContainerHideable").show(200);
-                   doitslider = true;
-               }
+               $("#toggleButtonBarHide").animate({width: "toggle"}, 200);
+               $("#toggleButtonBarShow").animate({width: "toggle"}, 200);
+               $(".dcgiButtonBarContainerHideable").animate({width: "toggle"}, 200);
                scrolledonce = true; // do not allow the scroll bar to affect us
         };', "\n";
 
