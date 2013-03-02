@@ -549,7 +549,7 @@ sub print_button_bar {
 	print "<p style=\"color: #b00;\">Warning: You are using a web browser without javascript support.  This web page will work just fine without javascript but you won't benefit from the file-selection abilities that a javascript-enabled web browser will offer.</p>\n";
 	print "</noscript>","\n";
 
-	print '<script>',"\n";
+	print '<script>',"\n", '"use strict";', "\n";
 
 	print 'function toggleIt(name, opposite, same) {
                if ( $("." + name).is(":visible") || 
@@ -610,8 +610,8 @@ sub print_button_bar {
     $buttonHTML .=  "<div class=\"dcgiButtonBarContainer\">\n";
     my $hidebutton = get_param($rule, 'hidebutton', 'hidebutton.svg');
     my $showbutton = get_param($rule, 'showbutton', 'showbutton.svg');
-    $buttonHTML .=  "<span id=\"toggleButtonBarHide\" style=\"display: inline-block;\"><img class=\"hideshowbutton\" src=\"$hidebutton\" height=\"200px\"/></span>\n";
-    $buttonHTML .=  "<span id=\"toggleButtonBarShow\"><img class=\"hideshowbutton\" src=\"$showbutton\" height=\"200px\"/></span>\n";
+    $buttonHTML .=  "<span id=\"toggleButtonBarHide\"><img class=\"hideshowbutton\" src=\"$hidebutton\" height=\"200px\"/></span>\n";
+    $buttonHTML .=  "<span id=\"toggleButtonBarShow\" style=\"display: none;\"><img class=\"hideshowbutton\" src=\"$showbutton\" height=\"200px\"/></span>\n";
     $buttonHTML .=  "<span class=\"dcgiButtonBarContainerHideable\">\n";
     if ($#names == -1) {
 	$buttonHTML .=  "ack, no buttons</div>\n";
@@ -663,7 +663,7 @@ sub print_button_bar {
     $buttonHTML .=  "</span></div>\n";
     print "</div>\n";
 
-    print "<script>\n";
+    print "<script>\n\"use strict\";";
 
     $buttonHTML =~ s/\n//g;
     print "\$(\".dcgiButtonBarOuterContainer\").html('$buttonHTML');";
@@ -687,8 +687,6 @@ sub print_button_bar {
 
     print "\$(\"\#olderVersionsButton\").click(function() { toggleIt(\"olderVersions\", \"moreButton\"); });\n";
     print "\$(\".dcgiHideButton\").hide();\n";
-    #print "toggleIt(\"toggleButtonBarShow\");\n";
-    print '$("#toggleButtonBarShow").hide(0);', "\n";
     print "toggleButtonBars();\n"; # shouldn't be needed twice but formats better
     print "toggleButtonBars();\n";
     print "scrolledonce = false;\n";
