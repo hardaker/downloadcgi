@@ -20,9 +20,12 @@ img.hideshowbutton {
 }
 .dcgiHideShowButtons {
   border-width: 0px;
+  white-space: nowrap;
 }
+
 .dcgiHideShowButtons td {
   border-width: 0px;
+  
 }
 .dcgiHideShowButton {
   margin: 1px;
