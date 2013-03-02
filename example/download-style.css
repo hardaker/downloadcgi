@@ -154,6 +154,7 @@ h2, h3 {
     clear: right;
     color: #888;
     font-style: italic;
+    margin-right: 5px;
 }
 
 .dcgiLinks {
